@@ -82,6 +82,27 @@
     }
   }
 </script>
+const API = "https://bikagamebot.onrender.com";
+const API_KEY = "BikaWeb2026_YourSecretLongKey";
 
+async function ping() {
+  const r = await fetch(`${API}/api/ping`);
+  return r.json();
+}
+
+async function getBalance(userId) {
+  const r = await fetch(`${API}/api/balance?userId=${encodeURIComponent(userId)}`, {
+    headers: { "X-API-KEY": API_KEY }
+  });
+  return r.json();
+}
+
+async function top10() {
+  const r = await fetch(`${API}/api/top10`, {
+    headers: { "X-API-KEY": API_KEY }
+  });
+  return r.json();
+}
+  
 </body>
 </html>
