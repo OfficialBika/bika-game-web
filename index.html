@@ -13,6 +13,7 @@
     .muted { color:#9fb0ff; }
     pre { white-space:pre-wrap; word-break:break-word; background:#0a1126; padding:12px; border-radius:12px; border:1px solid #203063; }
     .pill { display:inline-block; padding:6px 10px; border-radius:999px; background:#1b2b5a; border:1px solid #2a3a6b; margin-right:6px; }
+    .small { font-size: 12px; opacity: 0.9; }
   </style>
 </head>
 <body>
@@ -20,6 +21,7 @@
   <div class="card">
     <h2 style="margin:0 0 6px;">BIKA Web (GitHub Pages Test)</h2>
     <div class="muted">API Server: <span class="pill" id="apiHost"></span></div>
+    <div class="small muted">* Ping = no key, Balance/Top10 = X-API-KEY header</div>
   </div>
 
   <div class="card">
@@ -45,15 +47,25 @@
   </div>
 
 <script>
+  // ===== CONFIG =====
   const API = "https://bikagamebot.onrender.com";
+  const API_KEY = "BikaWeb2026_268726"; // Render ENV: WEB_API_KEY value အတိအကျ
+
+  // show API host on UI
   document.getElementById("apiHost").textContent = API;
+
+  // small helper: pretty print response
+  async function toJsonSafe(r) {
+    try { return await r.json(); } catch { return {}; }
+  }
 
   async function ping() {
     const out = document.getElementById("pingOut");
     out.textContent = "Loading...";
     try {
-      const r = await fetch(API + "/api/ping");
-      out.textContent = JSON.stringify(await r.json(), null, 2);
+      const r = await fetch(`${API}/api/ping`);
+      const j = await toJsonSafe(r);
+      out.textContent = JSON.stringify({ ok: r.ok, status: r.status, data: j }, null, 2);
     } catch (e) {
       out.textContent = "ERROR: " + e.message;
     }
@@ -63,9 +75,18 @@
     const out = document.getElementById("balOut");
     const userId = document.getElementById("userId").value.trim();
     out.textContent = "Loading...";
+
+    if (!userId) {
+      out.textContent = "ERROR: userId ထည့်ပါ";
+      return;
+    }
+
     try {
-      const r = await fetch(API + "/api/balance?userId=" + encodeURIComponent(userId));
-      out.textContent = JSON.stringify(await r.json(), null, 2);
+      const r = await fetch(`${API}/api/balance?userId=${encodeURIComponent(userId)}`, {
+        headers: { "X-API-KEY": API_KEY }
+      });
+      const j = await toJsonSafe(r);
+      out.textContent = JSON.stringify({ ok: r.ok, status: r.status, data: j }, null, 2);
     } catch (e) {
       out.textContent = "ERROR: " + e.message;
     }
@@ -75,35 +96,16 @@
     const out = document.getElementById("topOut");
     out.textContent = "Loading...";
     try {
-      const r = await fetch(API + "/api/top10");
-      out.textContent = JSON.stringify(await r.json(), null, 2);
+      const r = await fetch(`${API}/api/top10`, {
+        headers: { "X-API-KEY": API_KEY }
+      });
+      const j = await toJsonSafe(r);
+      out.textContent = JSON.stringify({ ok: r.ok, status: r.status, data: j }, null, 2);
     } catch (e) {
       out.textContent = "ERROR: " + e.message;
     }
   }
-  
-const API = "https://bikagamebot.onrender.com";
-const API_KEY = "BikaWeb2026_268726";
-
-async function ping() {
-  const r = await fetch(`${API}/api/ping`);
-  return r.json();
-}
-
-async function getBalance(userId) {
-  const r = await fetch(`${API}/api/balance?userId=${encodeURIComponent(userId)}`, {
-    headers: { "X-API-KEY": API_KEY }
-  });
-  return r.json();
-}
-
-async function top10() {
-  const r = await fetch(`${API}/api/top10`, {
-    headers: { "X-API-KEY": API_KEY }
-  });
-  return r.json();
-}
 </script>
-  
+
 </body>
 </html>
