@@ -1,580 +1,1090 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>BIKA ROCKET</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIKA Rocket Gift</title>
-  <meta name="theme-color" content="#050608" />
   <style>
-    :root{
-      --bg0:#050608;
-      --bg1:#050608;
-      --card:#111318;
-      --card-soft:#171a21;
-      --stroke:rgba(255,255,255,.08);
-      --text:#f5f7ff;
-      --muted:#9aa3c7;
-      --accent:#33b5ff;
-      --accent2:#7c4dff;
-      --good:#3ae39b;
-      --bad:#ff5c7a;
-      --radius:18px;
-    }
-    *{box-sizing:border-box;}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,system-ui;
-      color:var(--text);
-      background:
-        radial-gradient(900px 700px at 0 0, rgba(124,77,255,.35), transparent 60%),
-        radial-gradient(900px 700px at 100% 0, rgba(51,181,255,.35), transparent 60%),
-        #050608;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      padding:10px 10px 0;
+    :root {
+      --bg: #050712;
+      --card: #0b1020;
+      --card-alt: #0f1525;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59, 130, 246, 0.3);
+      --accent2: #8b5cf6;
+      --danger: #f97373;
+      --success: #4ade80;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.24);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.8);
     }
 
-    .app{
-      max-width:520px;
-      margin:0 auto;
-      display:flex;
-      flex-direction:column;
-      height:100vh;
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Inter", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
+      color: var(--text-main);
+    }
+
+    .app {
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px 12px 82px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     /* Top bar */
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:8px 4px 6px;
-    }
-    .backBtn{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      padding:4px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      font-size:12px;
-      color:var(--text);
-    }
-    .backBtn span.icon{
-      width:18px;height:18px;border-radius:999px;
-      display:grid;place-items:center;
-      background:rgba(255,255,255,.10);
-      font-size:13px;
-    }
-    .balanceBox{
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .chipBalance{
-      display:flex;align-items:center;gap:6px;
-      padding:4px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.11);
-      font-size:12px;
-    }
-    .chipBalance span.icon{
-      width:18px;height:18px;border-radius:999px;
-      display:grid;place-items:center;
-      background:radial-gradient(circle at 30% 30%,#33b5ff,#7c4dff);
-      font-size:11px;
-    }
-    .balanceBox button{
-      width:26px;height:26px;border-radius:999px;
-      border:none;
-      background:rgba(255,255,255,.1);
-      display:grid;place-items:center;
-      color:var(--text);
-      font-size:17px;
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
     }
 
-    /* Game header */
-    .gameHead{
-      margin-top:4px;
-      padding:6px 6px 4px;
-      display:flex;
-      justify-content:center;
-      position:relative;
+    .icon-btn {
+      border: none;
+      outline: none;
+      background: rgba(15, 23, 42, 0.75);
+      color: #e5e7eb;
+      border-radius: 999px;
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
     }
-    .giftTag{
-      padding:4px 10px;
-      border-radius:999px;
-      background:linear-gradient(120deg,#7c4dff,#b162ff);
-      font-size:13px;
-      font-weight:600;
-      display:flex;align-items:center;gap:6px;
-      box-shadow:0 8px 25px rgba(0,0,0,.8);
-    }
-    .giftTag span.emoji{font-size:16px;}
 
-    /* Timer section */
-    .timerWrap{
-      margin-top:8px;
-      display:flex;
-      justify-content:center;
-      align-items:center;
+    .title-pill {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #4c1d95, #7c3aed);
+      color: #f9fafb;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.7);
     }
-    .timerCircle{
-      width:200px;
-      height:200px;
-      border-radius:50%;
-      background:radial-gradient(circle at 50% 40%,#222633,#050608 70%);
-      display:grid;
-      place-items:center;
-      position:relative;
-      box-shadow:0 12px 40px rgba(0,0,0,.9);
+
+    .title-pill span.emoji {
+      font-size: 18px;
     }
-    .timerRing{
-      position:absolute;
-      inset:6px;
-      border-radius:50%;
+
+    .balance-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 12px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.8);
+    }
+
+    .balance-pill-label {
+      color: var(--text-soft);
+      font-size: 11px;
+    }
+
+    .balance-pill-amount {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 16px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
       background:
-        conic-gradient(#ff9a4b calc(var(--pct,0)*1%), rgba(255,255,255,.04) 0);
-    }
-    .timerCore{
-      position:absolute;
-      inset:16px;
-      border-radius:50%;
-      background:radial-gradient(circle at 50% 30%,#111319,#050608 70%);
-      display:grid;place-items:center;
-    }
-    .timerNumber{
-      font-size:54px;
-      font-weight:800;
-    }
-    .timerLabel{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:4px;
+        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.04), transparent 60%),
+        radial-gradient(circle at 100% 0%, rgba(129, 140, 248, 0.08), transparent 65%),
+        radial-gradient(circle at 40% 120%, rgba(236, 72, 153, 0.05), transparent 60%);
+      opacity: 0.9;
+      z-index: -1;
     }
 
-    /* Bet row */
-    .betRow{
-      margin-top:10px;
-      display:flex;
-      justify-content:center;
-      gap:6px;
-      flex-wrap:wrap;
-    }
-    .betTag{
-      padding:5px 12px;
-      border-radius:999px;
-      background:#153157;
-      border:1px solid rgba(96,154,255,.9);
-      font-size:12px;
-      font-weight:700;
-    }
-    .multiChip{
-      padding:5px 10px;
-      border-radius:999px;
-      font-size:12px;
-      background:rgba(33,39,52,1);
-      border:1px solid rgba(122,186,108,.6);
-      color:#a6f5bf;
-    }
-    .multiChip.red{
-      border-color:rgba(255,121,121,.7);
-      color:#ffb4c0;
-    }
-    .multiChip.purple{
-      border-color:rgba(156,129,255,.75);
-      color:#e6dbff;
+    /* Rocket panel */
+    .rocket-panel {
+      padding-top: 12px;
     }
 
-    /* Place bet button */
-    .placeWrap{
-      margin-top:12px;
-      padding:0 6px;
-    }
-    .placeBtn{
-      width:100%;
-      border:none;
-      border-radius:18px;
-      padding:12px;
-      font-size:16px;
-      font-weight:700;
-      color:#ffffff;
-      background:linear-gradient(135deg,#008dff,#2a5bff);
-      box-shadow:0 12px 40px rgba(0,0,0,.85);
-    }
-    .placeBtn:active{
-      transform:scale(.98);
+    .phase-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
     }
 
-    /* Round info */
-    .roundInfo{
-      margin-top:8px;
-      text-align:center;
-      font-size:12px;
-      color:var(--muted);
-    }
-    .roundInfo strong{color:var(--accent);}
-
-    /* Player list */
-    .playersCard{
-      margin-top:12px;
-      flex:1;
-      background:var(--card);
-      border-radius:20px 20px 0 0;
-      border-top:1px solid rgba(255,255,255,.06);
-      padding:10px 10px 4px;
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-    }
-    .playersHead{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:6px;
-    }
-    .playersHead h3{
-      margin:0;
-      font-size:13px;
-    }
-    .playersHead span{
-      font-size:11px;
-      color:var(--muted);
-    }
-    .playerList{
-      overflow-y:auto;
-      padding-right:2px;
-    }
-    .playerItem{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      border-radius:14px;
-      padding:8px 10px;
-      background:var(--card-soft);
-      border:1px solid rgba(255,255,255,.04);
-      margin-bottom:6px;
-    }
-    .playerLeft{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-    }
-    .avatar{
-      width:32px;height:32px;border-radius:999px;
-      background:radial-gradient(circle at 30% 30%,#33b5ff,#7c4dff);
-      display:grid;place-items:center;
-      font-size:15px;
-      font-weight:700;
-      color:#fff;
-    }
-    .playerMeta{
-      display:flex;flex-direction:column;
-      min-width:0;
-    }
-    .playerMeta b{
-      font-size:13px;
-      white-space:nowrap;
-      text-overflow:ellipsis;
-      overflow:hidden;
-      max-width:160px;
-    }
-    .playerMeta span{
-      font-size:11px;
-      color:var(--muted);
-    }
-    .playerRight{
-      text-align:right;
-      font-size:12px;
-    }
-    .playerRight .amount{
-      padding:4px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      margin-bottom:2px;
-    }
-    .playerRight .amount span.icon{
-      width:18px;height:18px;border-radius:999px;
-      display:grid;place-items:center;
-      background:radial-gradient(circle at 30% 30%,#33b5ff,#7c4dff);
-      font-size:11px;
-    }
-    .playerRight .multi{
-      font-size:11px;
-      color:var(--muted);
-    }
-    .playerRight .you{
-      font-size:11px;
-      color:var(--good);
-      font-weight:600;
+    .phase-badge {
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.35);
     }
 
-    /* Bottom nav */
-    .bottomNav{
-      height:52px;
-      border-top:1px solid rgba(255,255,255,.08);
-      background:rgba(7,8,12,.96);
-      display:flex;
-      align-items:center;
-      justify-content:space-around;
-      padding:2px 6px 3px;
-    }
-    .navItem{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:2px;
-      font-size:10px;
-      color:var(--muted);
-    }
-    .navItem span.icon{
-      width:24px;height:24px;border-radius:999px;
-      background:rgba(255,255,255,.06);
-      display:grid;place-items:center;
-      font-size:14px;
-    }
-    .navItem.active span.icon{
-      background:linear-gradient(135deg,#008dff,#2a5bff);
-      color:#fff;
-    }
-    .navItem.active{
-      color:#ffffff;
+    .phase-badge.live {
+      border-color: rgba(52, 211, 153, 0.9);
+      background: radial-gradient(circle at top, rgba(34, 197, 94, 0.12), rgba(15, 23, 42, 0.95));
+      color: #bbf7d0;
     }
 
-    @media (min-height:740px){
-      .timerCircle{width:220px;height:220px;}
+    /* Countdown + rocket */
+    .rocket-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .countdown-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 0%, #1f2937, #020617);
+      border: 3px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.95);
+    }
+
+    .countdown-circle::after {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: #f97316;
+      border-right-color: #f97316;
+      opacity: 0.0;
+      transform: rotate(-120deg);
+      transition: opacity 0.2s ease-out, transform 0.2s linear;
+    }
+
+    .countdown-inner {
+      text-align: center;
+    }
+
+    .countdown-number {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .countdown-label {
+      font-size: 11px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .countdown-multiplier {
+      font-size: 34px;
+      font-weight: 800;
+      color: #a855f7;
+      text-shadow: 0 0 18px rgba(168, 85, 247, 0.9);
+    }
+
+    /* Rocket track */
+    .rocket-track {
+      margin-top: 10px;
+      width: 100%;
+      height: 120px;
+      position: relative;
+      border-radius: 999px;
+      background: radial-gradient(circle at bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      overflow: hidden;
+    }
+
+    .rocket-trail {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 50%;
+      height: 4px;
+      margin-top: -2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(96, 165, 250, 0.2), rgba(129, 140, 248, 0.8));
+      box-shadow: 0 0 14px rgba(96, 165, 250, 0.6);
+      opacity: 0.7;
+    }
+
+    .rocket-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 0 18px rgba(248, 250, 252, 0.95);
+      top: 50%;
+      margin-top: -7px;
+      left: 16px;
+      transform: translateX(0);
+      transition: transform 0.08s linear;
+    }
+
+    .rocket-ship {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+      border-radius: 20px;
+      background: radial-gradient(circle at top, #22c55e, #16a34a);
+      bottom: 12px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 28px rgba(34, 197, 94, 0.9),
+        0 16px 35px rgba(15, 23, 42, 0.95);
+      transform: translateX(0) translateY(0);
+      transition: transform 0.08s linear;
+    }
+
+    .rocket-ship-icon {
+      font-size: 30px;
+    }
+
+    .rocket-burst {
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: radial-gradient(circle at bottom, rgba(59, 130, 246, 0.08), transparent 70%);
+      opacity: 0.0;
+      transition: opacity 0.18s ease-out;
+    }
+
+    .rocket-burst.active {
+      opacity: 1;
+    }
+
+    .chips-row {
+      width: 100%;
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 8px;
+      padding-bottom: 4px;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      min-width: 58px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 11px;
+      text-align: center;
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .chip.hot {
+      border-color: rgba(96, 165, 250, 0.95);
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.3), rgba(15, 23, 42, 0.96));
+      color: #dbeafe;
+      box-shadow: 0 0 18px rgba(59, 130, 246, 0.8);
+    }
+
+    .chip-win {
+      border-color: rgba(52, 211, 153, 0.9);
+      color: #bbf7d0;
+    }
+
+    /* Bet card */
+    .bet-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .bet-header span.sub {
+      color: var(--text-soft);
+      font-size: 11px;
+    }
+
+    .bet-input-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .bet-input-group {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 2px;
+    }
+
+    .bet-input-group button {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text-soft);
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+      border-radius: 999px;
+    }
+
+    .bet-input-group button:active {
+      background: rgba(31, 41, 55, 0.9);
+    }
+
+    .bet-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #e5e7eb;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .bet-input::placeholder {
+      color: rgba(148, 163, 184, 0.6);
+    }
+
+    .quick-bets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .quick-bet-btn {
+      flex: 1;
+      min-width: 56px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--text-soft);
+      font-size: 11px;
+      padding: 4px 0;
+    }
+
+    .quick-bet-btn:active {
+      background: rgba(31, 41, 55, 0.95);
+    }
+
+    .primary-btn {
+      margin-top: 4px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      padding: 11px 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: #f9fafb;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      box-shadow:
+        0 12px 32px rgba(37, 99, 235, 0.85),
+        0 0 18px rgba(129, 140, 248, 0.7);
+    }
+
+    .primary-btn[disabled] {
+      opacity: 0.55;
+      box-shadow: none;
+    }
+
+    .hint-text {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .hint-text strong {
+      color: #e5e7eb;
+    }
+
+    /* History list */
+    .history-card {
+      padding-top: 12px;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .history-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .history-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .history-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12px;
+    }
+
+    .history-main span.label {
+      color: var(--text-soft);
+      font-size: 11px;
+    }
+
+    .history-tags {
+      display: inline-flex;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      color: var(--text-soft);
+    }
+
+    .tag.win {
+      border-color: rgba(52, 211, 153, 0.95);
+      color: #bbf7d0;
+    }
+
+    .tag.lose {
+      border-color: rgba(248, 113, 113, 0.95);
+      color: #fecaca;
+    }
+
+    .history-amount {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .history-amount.win {
+      color: var(--success);
+    }
+
+    .history-amount.lose {
+      color: var(--danger);
+    }
+
+    /* Bottom nav (simple placeholder) */
+    .bottom-nav {
+      position: fixed;
+      inset-inline: 0;
+      bottom: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 6px 12px 10px;
+    }
+
+    .bottom-nav-inner {
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      display: flex;
+      justify-content: space-around;
+      padding: 6px 4px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+
+    .nav-item span.icon {
+      font-size: 16px;
+    }
+
+    .nav-item.active {
+      color: #e5e7eb;
+    }
+
+    @media (min-width: 480px) {
+      .app {
+        padding-top: 18px;
+      }
     }
   </style>
 </head>
 <body>
 <div class="app">
-  <!-- Top bar -->
-  <div class="topbar">
-    <button class="backBtn" onclick="window.location.href='index.html'">
-      <span class="icon">←</span>
-      <span>Back</span>
-    </button>
-    <div class="balanceBox">
-      <div class="chipBalance" id="uiBalance">
-        <span class="icon">◆</span>
-        <span id="balanceText">0.60</span>
+  <header class="top-bar">
+    <button class="icon-btn" onclick="history.back()">←</button>
+    <div class="title-pill">
+      <span class="emoji">🚀</span>
+      <span>BIKA ROCKET</span>
+    </div>
+    <div class="balance-pill">
+      <div class="balance-pill-label">Balance</div>
+      <div class="balance-pill-amount" id="balanceText">0 MMK</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Rocket area -->
+    <section class="card rocket-panel">
+      <div class="phase-line">
+        <span id="phaseText">BETTING • Place your bet</span>
+        <span class="phase-badge live" id="phaseBadge">Round LIVE</span>
       </div>
-      <button>+</button>
-    </div>
-  </div>
 
-  <!-- Game title -->
-  <div class="gameHead">
-    <div class="giftTag">
-      <span class="emoji">🎁</span>
-      <span>Epic Gift</span>
-    </div>
-  </div>
+      <div class="rocket-layout">
+        <div class="countdown-circle" id="countCircle">
+          <div class="countdown-inner">
+            <div class="countdown-number" id="mainNumber">0</div>
+            <div class="countdown-label" id="mainLabel">SECONDS</div>
+          </div>
+        </div>
 
-  <!-- Timer -->
-  <div class="timerWrap">
-    <div class="timerCircle">
-      <div class="timerRing" id="timerRing"></div>
-      <div class="timerCore">
-        <div class="timerNumber" id="timerNumber">8</div>
-        <div class="timerLabel" id="timerLabel">Next round in</div>
+        <div class="rocket-track">
+          <div class="rocket-trail"></div>
+          <div class="rocket-dot" id="rocketDot"></div>
+          <div class="rocket-ship" id="rocketShip">
+            <span class="rocket-ship-icon">🚀</span>
+          </div>
+          <div class="rocket-burst" id="rocketBurst"></div>
+        </div>
+
+        <div class="chips-row" id="recentChips">
+          <!-- last multipliers -->
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Bets -->
-  <div class="betRow">
-    <div class="betTag">BET</div>
-    <div class="multiChip">1.64x</div>
-    <div class="multiChip">3.12x</div>
-    <div class="multiChip purple">7.03x</div>
-    <div class="multiChip red">1.04x</div>
-    <div class="multiChip">1.85x</div>
-  </div>
+    <!-- Bet control -->
+    <section class="card bet-card">
+      <div class="bet-header">
+        <div>
+          <div>Bet panel</div>
+          <span class="sub">Min 20 MMK · Max 1000 MMK</span>
+        </div>
+        <span class="sub" id="roundInfo">Round 1</span>
+      </div>
 
-  <div class="placeWrap">
-    <button class="placeBtn" id="placeBtn">Place bet</button>
-  </div>
+      <div class="bet-input-row">
+        <span style="font-size:12px;color:var(--text-soft)">Bet amount</span>
+        <div class="bet-input-group">
+          <button id="minusBtn">−</button>
+          <input
+            id="betInput"
+            class="bet-input"
+            type="number"
+            inputmode="numeric"
+            min="20"
+            max="1000"
+            placeholder="0"
+          />
+          <button id="plusBtn">+</button>
+        </div>
+      </div>
 
-  <div class="roundInfo" id="roundInfo">
-    Round #<strong id="roundNo">1</strong> • Waiting for bets…
-  </div>
+      <div class="quick-bets">
+        <button class="quick-bet-btn" data-bet="20">20</button>
+        <button class="quick-bet-btn" data-bet="50">50</button>
+        <button class="quick-bet-btn" data-bet="100">100</button>
+        <button class="quick-bet-btn" data-bet="200">200</button>
+        <button class="quick-bet-btn" data-bet="500">500</button>
+        <button class="quick-bet-btn" data-bet="1000">1000</button>
+      </div>
 
-  <!-- Players list -->
-  <div class="playersCard">
-    <div class="playersHead">
-      <h3>Players</h3>
-      <span id="playerCount">4 players joined</span>
-    </div>
-    <div class="playerList" id="playerList">
-      <!-- Players will be injected here -->
-    </div>
-  </div>
+      <button class="primary-btn" id="actionButton">Place bet</button>
 
-  <!-- Bottom nav -->
-  <nav class="bottomNav">
-    <div class="navItem">
+      <div class="hint-text" id="hintText">
+        Round is in <strong>BETTING</strong> phase. Enter amount and tap
+        <strong>Place bet</strong>.
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="card history-card">
+      <div class="history-header">
+        <span>My round history</span>
+        <span style="font-size:11px;color:var(--text-soft)" id="historySummary">
+          No rounds yet
+        </span>
+      </div>
+
+      <ul class="history-list" id="historyList"></ul>
+    </section>
+  </main>
+</div>
+
+<!-- bottom nav (visual only) -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="nav-item">
       <span class="icon">🎒</span>
       <span>Backpack</span>
     </div>
-    <div class="navItem">
+    <div class="nav-item">
       <span class="icon">👥</span>
       <span>Invite</span>
     </div>
-    <div class="navItem active" onclick="window.location.href='rocket.html'">
+    <div class="nav-item active">
       <span class="icon">🏠</span>
       <span>Home</span>
     </div>
-    <div class="navItem">
+    <div class="nav-item">
       <span class="icon">🏆</span>
       <span>Leaderboard</span>
     </div>
-    <div class="navItem">
+    <div class="nav-item">
       <span class="icon">💰</span>
       <span>Earn</span>
     </div>
-  </nav>
+  </div>
 </div>
 
 <script>
-  // ===== Demo state =====
-  const ROUND_DURATION = 10; // seconds
-  let remaining = ROUND_DURATION;
-  let roundNo = 1;
-  let timerId = null;
+  // ====== CONFIG ======
+  const MIN_BET = 20;
+  const MAX_BET = 1000;
+  const BET_DURATION = 6000; // ms (0 -> 6 sec)
+  const HOLD_AFTER_CRASH = 3000; // ms
+  const MULTI_TICK = 80; // ms update for multiplier
+
+  // Demo balance. TODO: Replace with real balance from your API.
+  let balance = 100000; // MMK
+
+  // STATE
+  let roundIndex = 1;
+  let roundState = "betting"; // betting | launch | crashed
+  let betAmount = 0;
   let hasBetThisRound = false;
-  let balance = 0.60; // demo balance (diamonds)
+  let cashedOut = false;
+  let currentMultiplier = 1.0;
+  let crashPoint = 2.0;
+  let engineTimer = null;
+  let rocketTrackWidth = 0;
+  let recentMultipliers = [];
+
+  // ELEMENTS
   const balanceText = document.getElementById("balanceText");
-  const timerNumber = document.getElementById("timerNumber");
-  const timerRing = document.getElementById("timerRing");
-  const timerLabel = document.getElementById("timerLabel");
+  const mainNumber = document.getElementById("mainNumber");
+  const mainLabel = document.getElementById("mainLabel");
+  const countCircle = document.getElementById("countCircle");
+  const rocketDot = document.getElementById("rocketDot");
+  const rocketShip = document.getElementById("rocketShip");
+  const rocketBurst = document.getElementById("rocketBurst");
+  const recentChips = document.getElementById("recentChips");
+  const phaseText = document.getElementById("phaseText");
+  const phaseBadge = document.getElementById("phaseBadge");
   const roundInfo = document.getElementById("roundInfo");
-  const roundNoEl = document.getElementById("roundNo");
-  const placeBtn = document.getElementById("placeBtn");
-  const playerListEl = document.getElementById("playerList");
-  const playerCountEl = document.getElementById("playerCount");
+  const betInput = document.getElementById("betInput");
+  const minusBtn = document.getElementById("minusBtn");
+  const plusBtn = document.getElementById("plusBtn");
+  const quickBetBtns = document.querySelectorAll(".quick-bet-btn");
+  const actionButton = document.getElementById("actionButton");
+  const hintText = document.getElementById("hintText");
+  const historyList = document.getElementById("historyList");
+  const historySummary = document.getElementById("historySummary");
 
-  const demoPlayers = [
-    { name:"AMIR HOSSEIN", amount:0.60, multi:"×1.00" },
-    { name:"sam", amount:1.50, multi:"×1.00" },
-    { name:"BLACK", amount:1.00, multi:"×1.00" },
-    { name:"Abu 🐱", amount:0.78, multi:"×1.00" },
-  ];
-
-  function fmt(x){
-    return Number(x).toFixed(2);
+  function formatMMK(v) {
+    return v.toLocaleString("en-US") + " MMK";
   }
 
-  function renderPlayers(){
-    const all = [...demoPlayers];
-    if (hasBetThisRound){
-      all.unshift({ name:"You", amount:0.01, multi:"×1.00", you:true });
-    }
-    playerListEl.innerHTML = all.map(p => `
-      <div class="playerItem">
-        <div class="playerLeft">
-          <div class="avatar">${p.name[0] || "?"}</div>
-          <div class="playerMeta">
-            <b>${p.name}</b>
-            <span>${p.you ? "Your bet" : "Joined this round"}</span>
-          </div>
-        </div>
-        <div class="playerRight">
-          <div class="amount">
-            <span class="icon">◆</span>
-            <span>${fmt(p.amount)}</span>
-          </div>
-          <div class="multi">${p.multi} ${p.you ? '<span class="you">YOU</span>' : ""}</div>
-        </div>
-      </div>
-    `).join("");
-    playerCountEl.textContent = `${all.length} players joined`;
+  function updateBalanceUI() {
+    balanceText.textContent = formatMMK(balance);
   }
 
-  function updateBalanceUI(){
-    balanceText.textContent = fmt(balance);
-  }
-
-  function updateTimerUI(){
-    timerNumber.textContent = remaining;
-    const pct = ((ROUND_DURATION - remaining) / ROUND_DURATION);
-    timerRing.style.setProperty("--pct", pct * 100);
-    if (remaining <= 0){
-      timerLabel.textContent = "Opening gift…";
-    }else{
-      timerLabel.textContent = hasBetThisRound ? "Your bet is locked" : "Next round in";
+  function setPhase(state, extra = "") {
+    switch (state) {
+      case "betting":
+        phaseText.textContent = "BETTING • Place your bet";
+        phaseBadge.textContent = "Round LIVE";
+        phaseBadge.classList.add("live");
+        hintText.innerHTML =
+          'Round is in <strong>BETTING</strong> phase. Enter amount and tap <strong>Place bet</strong>.';
+        mainLabel.textContent = "SECONDS";
+        break;
+      case "launch":
+        phaseText.textContent = "FLYING • Cash out before it explodes!";
+        phaseBadge.textContent = "ROCKET LIVE";
+        phaseBadge.classList.add("live");
+        hintText.innerHTML =
+          'Tap <strong>Cash out</strong> at the multiplier you like. If it crashes first, you lose the bet.';
+        mainLabel.textContent = "MULTIPLIER";
+        break;
+      case "crashed":
+        phaseText.textContent = "CRASHED • " + extra;
+        phaseBadge.textContent = "Round ended";
+        phaseBadge.classList.remove("live");
+        hintText.innerHTML =
+          "Round finished. Next round will open shortly. Place a new bet when countdown starts.";
+        break;
     }
   }
 
-  function startTimer(){
-    clearInterval(timerId);
-    remaining = ROUND_DURATION;
-    updateTimerUI();
-    timerId = setInterval(() => {
-      remaining--;
-      if (remaining <= 0){
-        remaining = 0;
-        updateTimerUI();
-        clearInterval(timerId);
-        resolveRound();
-      }else{
-        updateTimerUI();
-      }
-    }, 1000);
+  function measureTrack() {
+    const rect = rocketShip.parentElement.getBoundingClientRect();
+    rocketTrackWidth = rect.width - 56 - 24; // track minus rocket width and padding
   }
 
-  function resolveRound(){
-    // Random multiplier between 1.01 and ~8x
-    const multi = (1 + Math.random() * 7).toFixed(2);
-    const multiText = `${multi}x`;
-    roundInfo.innerHTML = `Round #<strong>${roundNo}</strong> • Result: <strong>${multiText}</strong>`;
-
-    if (hasBetThisRound){
-      const win = 0.01 * multi;
-      balance += win;
-      updateBalanceUI();
-      placeBtn.textContent = `You won ${win.toFixed(3)} ◆`;
-    }else{
-      placeBtn.textContent = "Place bet";
-    }
-
-    // Reset bet for next round
-    hasBetThisRound = false;
-    renderPlayers();
-
-    // Start next round after short delay
-    setTimeout(() => {
-      roundNo++;
-      roundNoEl.textContent = roundNo;
-      roundInfo.innerHTML = `Round #<strong>${roundNo}</strong> • Waiting for bets…`;
-      placeBtn.textContent = "Place bet";
-      startTimer();
-    }, 2000);
-  }
-
-  placeBtn.addEventListener("click", () => {
-    if (hasBetThisRound){
-      // already placed
-      return;
-    }
-    hasBetThisRound = true;
-    roundInfo.innerHTML = `Round #<strong>${roundNo}</strong> • Bet placed: <strong>0.01 ◆</strong>`;
-    placeBtn.textContent = "Bet placed";
-    renderPlayers();
+  window.addEventListener("resize", () => {
+    measureTrack();
   });
 
-  // Init
-  updateBalanceUI();
-  renderPlayers();
-  startTimer();
+  function moveRocket(progress) {
+    progress = Math.max(0, Math.min(1, progress || 0));
+    const translateX = rocketTrackWidth * progress;
+    const translateY = -18 * progress;
+    rocketDot.style.transform = `translateX(${translateX}px)`;
+    rocketShip.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`;
+  }
+
+  function resetRocket() {
+    moveRocket(0);
+    rocketBurst.classList.remove("active");
+  }
+
+  function setCountdownIndicator(progress) {
+    const clamped = Math.max(0, Math.min(1, progress));
+    const deg = -120 + 270 * clamped;
+    countCircle.style.setProperty("--progress", clamped);
+    countCircle.style.setProperty("--deg", deg + "deg");
+    countCircle.style.setProperty("--opacity", clamped > 0 ? "1" : "0");
+    countCircle.style.setProperty("--deg", deg);
+    countCircle.querySelector("::after");
+    countCircle.style.setProperty("--dummy", "0"); // no-op just to trigger style
+    countCircle.style.setProperty("--opacity", clamped > 0 ? "1" : "0");
+    countCircle.style.cssText += `;`;
+    // we can't animate pseudo directly from JS nicely on mobile, so keep simple
+  }
+
+  // ====== ROUND FLOW ======
+
+  function startBettingRound() {
+    clearInterval(engineTimer);
+    roundState = "betting";
+    hasBetThisRound = false;
+    cashedOut = false;
+    betAmount = 0;
+    resetRocket();
+    roundInfo.textContent = "Round " + roundIndex;
+    actionButton.disabled = false;
+    actionButton.textContent = "Place bet";
+    actionButton.dataset.mode = "bet";
+
+    // reset input
+    betInput.value = "";
+    updateBalanceUI();
+    setPhase("betting");
+
+    const start = performance.now();
+    engineTimer = setInterval(() => {
+      const now = performance.now();
+      const elapsed = now - start;
+      const sec = Math.floor(elapsed / 1000);
+      const progress = Math.min(1, elapsed / BET_DURATION);
+      mainNumber.textContent = Math.min(6, sec);
+      // simple glow on circle
+      countCircle.style.boxShadow =
+        "0 18px 40px rgba(15,23,42,0.95), 0 0 14px rgba(249,115,22," +
+        (0.3 + 0.4 * progress) +
+        ")";
+      if (elapsed >= BET_DURATION) {
+        clearInterval(engineTimer);
+        launchRocket();
+      }
+    }, 80);
+  }
+
+  function launchRocket() {
+    roundState = "launch";
+    rocketBurst.classList.add("active");
+    currentMultiplier = 1.0;
+    // Random crash between 1.00x and 10.00x
+    crashPoint = +(1 + Math.random() * 9).toFixed(2);
+    setPhase("launch");
+    actionButton.textContent = "Cash out";
+    actionButton.dataset.mode = "cashout";
+    if (!hasBetThisRound) {
+      hintText.innerHTML =
+        "You didn't place a bet this round. Watch the rocket, then join next round.";
+    }
+
+    engineTimer = setInterval(() => {
+      if (roundState !== "launch") return;
+      currentMultiplier += 0.04 + currentMultiplier * 0.015; // accelerate a bit
+      mainNumber.textContent = currentMultiplier.toFixed(2) + "x";
+
+      const progress = Math.min(1, currentMultiplier / crashPoint);
+      moveRocket(progress);
+
+      if (currentMultiplier >= crashPoint) {
+        handleCrash();
+      }
+    }, MULTI_TICK);
+  }
+
+  function handleCrash() {
+    if (roundState !== "launch") return;
+    roundState = "crashed";
+    clearInterval(engineTimer);
+    mainNumber.textContent = crashPoint.toFixed(2) + "x";
+    setPhase("crashed", "Rocket exploded at " + crashPoint.toFixed(2) + "x");
+    rocketBurst.classList.remove("active");
+    actionButton.disabled = true;
+    actionButton.textContent = "Round ended";
+    actionButton.dataset.mode = "none";
+
+    // if user has bet and didn't cash out => lose
+    let resultText = "No bet this round";
+    if (hasBetThisRound && !cashedOut) {
+      addHistory({
+        round: roundIndex,
+        bet: betAmount,
+        cashoutMulti: null,
+        winAmount: -betAmount,
+      });
+      resultText =
+        "You lost " + formatMMK(betAmount) + " (crashed before cash out)";
+    }
+
+    historySummary.textContent = resultText;
+
+    // store this crash in recent chips
+    recentMultipliers.unshift(crashPoint.toFixed(2) + "x");
+    if (recentMultipliers.length > 7) recentMultipliers.pop();
+    renderRecentChips();
+
+    roundIndex++;
+    setTimeout(startBettingRound, HOLD_AFTER_CRASH);
+  }
+
+  function addHistory(entry) {
+    const li = document.createElement("li");
+    li.className = "history-row";
+
+    const main = document.createElement("div");
+    main.className = "history-main";
+
+    const title = document.createElement("div");
+    title.textContent = "Round " + entry.round;
+    main.appendChild(title);
+
+    const tags = document.createElement("div");
+    tags.className = "history-tags";
+
+    const betTag = document.createElement("span");
+    betTag.className = "tag";
+    betTag.textContent = "Bet " + entry.bet.toLocaleString("en-US");
+    tags.appendChild(betTag);
+
+    if (entry.cashoutMulti) {
+      const multiTag = document.createElement("span");
+      multiTag.className = "tag win";
+      multiTag.textContent = "Cash out " + entry.cashoutMulti.toFixed(2) + "x";
+      tags.appendChild(multiTag);
+    } else {
+      const loseTag = document.createElement("span");
+      loseTag.className = "tag lose";
+      loseTag.textContent = "No cash out";
+      tags.appendChild(loseTag);
+    }
+
+    main.appendChild(tags);
+
+    const amount = document.createElement("div");
+    amount.className = "history-amount";
+    if (entry.winAmount >= 0) {
+      amount.classList.add("win");
+      amount.textContent = "+" + formatMMK(entry.winAmount);
+    } else {
+      amount.classList.add("lose");
+      amount.textContent = "-" + formatMMK(Math.abs(entry.winAmount));
+    }
+
+    li.appendChild(main);
+    li.appendChild(amount);
+
+    historyList.prepend(li);
+  }
+
+  function renderRecentChips() {
+    recentChips.innerHTML = "";
+    recentMultipliers.forEach((m, idx) => {
+      const span = document.createElement("span");
+      span.className = "chip";
+      if (idx === 0) span.classList.add("chip", "hot");
+      span.textContent = m;
+      recentChips.appendChild(span);
+    });
+  }
+
+  // ====== USER ACTIONS ======
+
+  function clampBet(v) {
+    if (isNaN(v)) return 0;
+    v = Math.floor(v);
+    if (v < MIN_BET) v = MIN_BET;
+    if (v > MAX_BET) v = MAX_BET;
+    if (v > balance) v = balance;
+    return v;
+  }
+
+  function syncBetInput(v) {
+    betInput.value = v > 0 ? v : "";
+  }
+
+  minusBtn.addEventListener("click", () => {
+    let current = parseInt(betInput.value || "0", 10);
+    if (!current) current = MIN_BET;
+    current = clampBet(current - 20);
+    syncBetInput(current);
+  });
+
+  plusBtn.addEventListener("click", () => {
+    let current = parseInt(betInput.value || "0", 10);
+    if (!current) current = MIN_BET;
+    current = clampBet(current + 20);
+    syncBetInput(current);
+  });
+
+  quickBetBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const v = clampBet(parseInt(btn.dataset.bet, 10));
+      syncBetInput(v);
+    });
+  });
+
+  actionButton.addEventListener("click", () => {
+    const mode = actionButton.dataset.mode;
+    if (mode === "bet") {
+      if (roundState !== "betting") return;
+      let v = clampBet(parseInt(betInput.value || "0", 10));
+      if (!v || v < MIN_BET) {
+        hintText.innerHTML =
+          "<strong>Bet too low.</strong> Minimum is " + MIN_BET + " MMK.";
+        return;
+      }
+      if (v > balance) {
+        hintText.innerHTML =
+          "<strong>Not enough balance.</strong> Adjust your bet.";
+        return;
+      }
+      // lock bet
+      betAmount = v;
+      balance -= v;
+      updateBalanceUI();
+      hasBetThisRound = true;
+      cashedOut = false;
+      actionButton.textContent = "Bet placed";
+      actionButton.disabled = true;
+      hintText.innerHTML =
+        "Bet locked: <strong>" +
+        formatMMK(betAmount) +
+        "</strong>. Wait for rocket to launch…";
+    } else if (mode === "cashout") {
+      if (roundState !== "launch") return;
+      if (!hasBetThisRound || cashedOut) return;
+      cashedOut = true;
+      const win = Math.floor(betAmount * currentMultiplier);
+      balance += win;
+      updateBalanceUI();
+      addHistory({
+        round: roundIndex,
+        bet: betAmount,
+        cashoutMulti: currentMultiplier,
+        winAmount: win,
+      });
+      historySummary.textContent =
+        "You cashed out at " +
+        currentMultiplier.toFixed(2) +
+        "x and won " +
+        formatMMK(win) +
+        ".";
+      hintText.innerHTML =
+        "<strong>Nice!</strong> You cashed out at " +
+        currentMultiplier.toFixed(2) +
+        "x. Wait for next round to bet again.";
+      actionButton.textContent = "Cashed out";
+      actionButton.disabled = true;
+    }
+  });
+
+  // ====== INIT ======
+  function init() {
+    updateBalanceUI();
+    measureTrack();
+    renderRecentChips();
+    startBettingRound();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
