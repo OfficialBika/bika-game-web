@@ -3,711 +3,486 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIKA Web • Slot & Balance</title>
-  <meta name="theme-color" content="#0b1020" />
+  <title>BIKA Slot Demo</title>
+  <meta name="theme-color" content="#070b17" />
   <style>
     :root{
       --bg0:#070b17; --bg1:#0b1020;
-      --card: rgba(17, 26, 51, .75);
-      --stroke: rgba(36,48,90,.85);
-      --stroke2: rgba(42,58,107,.85);
+      --card: rgba(17, 26, 51, .85);
+      --stroke: rgba(36,48,90,.9);
       --text:#eaf0ff; --muted:#9fb0ff;
       --good:#38f6b2; --bad:#ff5c7a; --warn:#ffd37a;
-      --shadow: 0 16px 50px rgba(0,0,0,.45);
-      --radius: 18px; --radius2: 14px;
+      --shadow: 0 20px 60px rgba(0,0,0,.6);
+      --radius: 22px;
     }
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color: var(--text);
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+      color:var(--text);
       background:
-        radial-gradient(1200px 800px at 15% 10%, rgba(104,131,255,.18), transparent 60%),
-        radial-gradient(900px 600px at 85% 25%, rgba(56,246,178,.10), transparent 60%),
-        radial-gradient(1200px 800px at 55% 110%, rgba(255,92,122,.10), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      min-height: 100vh;
+        radial-gradient(1200px 900px at 10% 0%, rgba(104,131,255,.2), transparent 60%),
+        radial-gradient(900px 600px at 90% 30%, rgba(56,246,178,.15), transparent 60%),
+        linear-gradient(180deg,var(--bg0),var(--bg1));
+      min-height:100vh;
       padding:18px 14px 22px;
-      overflow-x:hidden;
     }
-    .wrap{
-      position:relative;
-      z-index:1;
-      max-width:980px;
-      margin:0 auto;
-      display:grid;
-      gap:14px;
-    }
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:14px;
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(17,26,51,.85), rgba(10,17,38,.65));
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-    .brand{ display:flex; gap:10px; align-items:center; min-width:0; }
-    .logo{
-      width:40px; height:40px; border-radius:14px;
-      background:
-        radial-gradient(circle at 30% 30%, rgba(56,246,178,.95), transparent 55%),
-        radial-gradient(circle at 70% 70%, rgba(104,131,255,.95), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow:0 14px 35px rgba(0,0,0,.4);
-    }
-    h1{ font-size:17px; margin:0; letter-spacing:.2px; }
-    .sub{ margin-top:3px; font-size:12px; color:var(--muted); }
-    .pill{
-      margin-top:4px;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid var(--stroke2);
-      background:rgba(10,17,38,.8);
-      font-size:11px;
-      color:var(--muted);
-    }
-    .pill-dot{
-      width:7px; height:7px;
-      border-radius:999px;
-      background:var(--bad);
-    }
-    .pill-dot.ok{ background:var(--good); }
+    .wrap{ max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:14px; position:relative; z-index:1; }
 
-    .actions{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-    button{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(104,131,255,.22), rgba(10,17,38,.75));
-      color: var(--text); padding:9px 11px; border-radius:14px;
-      cursor:pointer; font-weight:800; letter-spacing:.2px;
-      box-shadow: 0 14px 35px rgba(0,0,0,.25);
-      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-      user-select:none;
-      font-size:12px;
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 14px;
+      border-radius:999px;
+      background: linear-gradient(120deg, rgba(8,13,32,.95), rgba(21,35,78,.92));
+      border:1px solid rgba(90,110,200,.75);
+      box-shadow:0 16px 50px rgba(0,0,0,.6);
+      position:sticky; top:0; z-index:5;
     }
-    button:hover{ transform: translateY(-1px); border-color: rgba(104,131,255,.55); box-shadow: 0 18px 45px rgba(0,0,0,.35); }
-    button:active{ transform: translateY(0px) scale(.99); }
-    button.secondary{ background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(10,17,38,.75)); }
-    button.good{ background: linear-gradient(180deg, rgba(56,246,178,.20), rgba(10,17,38,.85)); }
-
-    .grid{ display:grid; grid-template-columns:1fr; gap:14px; }
-    @media (min-width:820px){ .grid{ grid-template-columns:1fr 1fr; } .span2{ grid-column: span 2; } }
+    @media(max-width:640px){ header{ border-radius:20px; flex-wrap:wrap; } }
+    .logo{ width:32px;height:32px;border-radius:12px;background:radial-gradient(circle at 30% 30%,rgba(56,246,178,.95),transparent 55%),radial-gradient(circle at 70% 70%,rgba(104,131,255,.95),transparent 55%);border:1px solid rgba(255,255,255,.2); }
+    .titleBox{ display:flex;flex-direction:column; }
+    .titleBox h1{ margin:0;font-size:16px; }
+    .titleBox span{ font-size:11px;color:var(--muted);}
+    nav{ display:flex;gap:6px;flex-wrap:wrap;margin-left:auto; }
+    nav a{
+      font-size:11px; text-decoration:none; color:var(--muted);
+      padding:5px 9px; border-radius:999px;
+      border:1px solid rgba(120,140,220,.6);
+      background:rgba(8,13,32,.96);
+    }
+    nav a.active{
+      color:var(--text);
+      background:linear-gradient(120deg,rgba(104,131,255,.7),rgba(56,246,178,.6));
+      border-color:transparent;
+      font-weight:700;
+    }
 
     .card{
-      border-radius: var(--radius);
+      border-radius:var(--radius);
       border:1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(17,26,51,.85), rgba(10,17,38,.65));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      overflow:hidden;
-      position:relative;
+      background: radial-gradient(130% 220% at 0 0, rgba(104,131,255,.3), transparent 60%), rgba(8,11,28,.98);
+      padding:14px 14px 16px;
+      box-shadow:var(--shadow);
     }
-    .card::before{
-      content:""; position:absolute; inset:0; pointer-events:none;
-      background:
-        radial-gradient(500px 200px at 20% 0%, rgba(104,131,255,.15), transparent 50%),
-        radial-gradient(450px 220px at 80% 20%, rgba(56,246,178,.10), transparent 55%);
-    }
-    .cardInner{ position:relative; padding:14px; }
-    .cardTitle{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
-    .cardTitle h2{ font-size:15px; margin:0; }
-    .hint{ font-size:12px; color: var(--muted); }
+    .cardTitle{ display:flex;justify-content:space-between;gap:10px;align-items:flex-end;margin-bottom:10px;}
+    .cardTitle h2{ margin:0;font-size:17px;}
+    .cardTitle span{ font-size:11px;color:var(--muted);}
+    .row{ display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+    .row>*{ flex:1;min-width:150px;}
 
-    input{
-      width:100%;
-      padding: 11px 11px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(15,23,48,.75);
-      color: var(--text);
-      outline:none;
-      font-size:13px;
-    }
-    input:focus{ border-color: rgba(104,131,255,.7); box-shadow: 0 0 0 4px rgba(104,131,255,.18); }
-
-    .row{ display:flex; gap:9px; flex-wrap:wrap; align-items:center; }
-    .row > *{ flex:1; min-width:160px; }
-    .row .tight{ flex:0 0 auto; min-width:auto; }
-
-    pre{
-      margin:8px 0 0;
-      white-space: pre-wrap;
-      word-break: break-word;
-      padding: 10px;
-      border-radius: var(--radius2);
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(10,17,38,.85);
-      color: #d9e3ff;
-      max-height: 220px;
-      overflow:auto;
-      font-size:11px;
-    }
-
-    .skeleton{
-      border-radius: var(--radius2);
-      height: 80px;
-      margin-top: 8px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.12), rgba(255,255,255,.06));
-      background-size: 220% 100%;
-      animation: shimmer 1.1s linear infinite;
-    }
-    @keyframes shimmer{ to{ background-position:-220% 0; } }
-
-    .toast{
-      position: fixed; left:50%; bottom:16px; transform: translateX(-50%);
-      padding: 9px 11px;
-      border-radius: 14px;
+    /* Wallet / bet panel */
+    .walletRow{ display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+    .walletBox{
+      flex:1;min-width:160px;
+      padding:10px 12px;border-radius:16px;
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(10,17,38,.94);
-      box-shadow: 0 18px 55px rgba(0,0,0,.55);
-      backdrop-filter: blur(12px);
-      color: var(--text);
-      font-weight: 900;
-      display:none;
-      z-index: 9;
+      background:rgba(6,10,26,.96);
       font-size:12px;
     }
-    .toast.show{ display:block; animation: pop .18s ease; }
-    @keyframes pop{ from{ transform: translateX(-50%) translateY(6px); opacity:.2;} to{ transform: translateX(-50%) translateY(0); opacity:1;} }
-    .toast small{ font-weight:700; color: var(--muted); display:block; margin-top:2px; }
+    .walletMain{display:flex;justify-content:space-between;align-items:center;gap:6px;}
+    .walletMain b{font-size:15px;}
+    .walletMain span{font-size:11px;color:var(--muted);}
+    .walletMMK{font-size:18px;font-weight:900;}
+    .walletMMK small{font-size:11px;color:var(--muted);font-weight:600;}
 
-    .lb{ display:grid; gap:8px; margin-top:8px; }
-    .lbItem{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding: 10px 11px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(15,23,48,.70);
-      box-shadow: 0 12px 28px rgba(0,0,0,.20);
-      transform: translateY(10px);
-      opacity:0;
-      animation: enter .45s ease forwards;
-    }
-    @keyframes enter{
-      to{ transform: translateY(0); opacity:1; }
-    }
-    .lbItem.top1{ border-color: rgba(255,211,122,.45); box-shadow: 0 18px 45px rgba(255,211,122,.10), 0 16px 50px rgba(0,0,0,.30); }
-    .lbItem.top2{ border-color: rgba(159,176,255,.45); }
-    .lbItem.top3{ border-color: rgba(56,246,178,.35); }
-
-    .left{ display:flex; align-items:center; gap:9px; min-width:0; }
-    .rank{
-      width: 38px; height:38px; border-radius: 13px;
-      display:grid; place-items:center;
-      font-weight: 1000;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(10,17,38,.80);
-      position:relative;
-      overflow:hidden;
+    .betRow{ display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+    .betTag{font-size:11px;color:var(--muted);margin-bottom:4px;}
+    .chip{
       flex:0 0 auto;
-      font-size:14px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(10,16,32,.98);
+      font-size:11px;font-weight:700;
+      cursor:pointer;
     }
-    .rank.glow::after{
-      content:"";
-      position:absolute;
-      inset:-35%;
-      background: conic-gradient(from 0deg, transparent, rgba(255,255,255,.25), transparent);
-      animation: shine 2.2s linear infinite;
+    .chip.active{
+      border-color:rgba(104,131,255,.9);
+      background:linear-gradient(120deg,rgba(104,131,255,.7),rgba(56,246,178,.5));
+      color:var(--bg0);
     }
-    @keyframes shine{ to{ transform:rotate(360deg); } }
 
-    .name{ display:flex; flex-direction:column; min-width:0; }
-    .name b{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 54vw; }
-    .name span{ color: var(--muted); font-size:11px; margin-top:2px; }
-
-    .bal{ font-weight: 1000; letter-spacing:.2px; flex: 0 0 auto; font-size:13px; }
-    .tag{
-      font-size: 11px; color: var(--muted); font-weight: 900;
-      padding: 3px 7px; border-radius: 999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(10,17,38,.60);
-      margin-left: 6px;
+    input[type="number"]{
+      width:100%;
+      padding:8px 10px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(10,16,32,.96);
+      color:var(--text);outline:none;font-size:12px;
     }
-    .ok{ color: var(--good); } .bad{ color: var(--bad); } .warn{ color: var(--warn); }
+    input[type="number"]:focus{
+      border-color:rgba(104,131,255,.9);
+      box-shadow:0 0 0 3px rgba(104,131,255,.35);
+    }
 
-    .slotWrap{ display:grid; gap:8px; margin-top:6px; }
-    .slotBox{
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(10,17,38,.75);
-      padding: 12px;
+    button{
+      appearance:none;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.16);
+      padding:10px 12px;
+      background:linear-gradient(180deg,rgba(104,131,255,.5),rgba(9,14,34,.98));
+      color:var(--text);
+      font-weight:800;
+      font-size:13px;
+      letter-spacing:.2px;
+      cursor:pointer;
+      box-shadow:0 18px 55px rgba(0,0,0,.7);
+      transition:transform .12s ease, box-shadow .12s ease,border-color .12s ease;
+    }
+    button:active{ transform:translateY(0) scale(.97); box-shadow:0 10px 30px rgba(0,0,0,.7);}
+    button:hover{ transform:translateY(-1px); box-shadow:0 22px 60px rgba(0,0,0,.8); border-color:rgba(104,131,255,.9);}
+    button.secondary{ background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(9,14,34,.98));}
+
+    /* Slot machine */
+    .slotGrid{
+      margin-top:10px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.18);
+      background:radial-gradient(circle at 0 0,rgba(255,255,255,.12),transparent 60%),rgba(6,9,24,.98);
+      padding:12px 10px 14px;
       position:relative;
       overflow:hidden;
     }
-    .slotTop{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin-bottom: 9px;
-    }
-    .slotTitle{ font-weight: 1000; letter-spacing:.2px; font-size:13px; }
     .slotReels{
       display:grid;
-      grid-template-columns: repeat(3,minmax(0,1fr));
-      gap:8px;
+      grid-template-columns:repeat(5,1fr);
+      gap:7px;
     }
-    .reel{
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(15,23,48,.85);
-      height: 64px;
-      display:grid;
-      place-items:center;
+    .reelCell{
+      height:64px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(4,7,20,.96);
+      display:grid;place-items:center;
       font-size:30px;
-      position:relative;
-      overflow:hidden;
     }
-    .reel.spin{
-      animation: reelSpin .55s ease-in-out infinite;
+    .reelCell.spin{ animation:slotSpin .6s ease-in-out infinite;}
+    @keyframes slotSpin{
+      0%{ transform:translateY(0); filter:blur(0);}
+      50%{ transform:translateY(-4px); filter:blur(.5px);}
+      100%{ transform:translateY(0); filter:blur(0);}
     }
-    @keyframes reelSpin{
-      0%{ transform: translateY(0); filter: blur(0px); }
-      50%{ transform: translateY(-2px); filter: blur(.35px); }
-      100%{ transform: translateY(0); filter: blur(0px); }
-    }
-    .slotHint{ color: var(--muted); font-size: 11px; margin-top: 7px; }
-
-    canvas#confetti{
-      position: fixed;
-      inset:0;
-      pointer-events:none;
-      z-index: 8;
+    .payline{
+      position:absolute;left:8px;right:8px;top:50%;height:2px;
+      background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.6),rgba(255,255,255,.1));
+      opacity:.4;pointer-events:none;
     }
 
-    footer{ margin-top: 4px; text-align:center; color: rgba(159,176,255,.72); font-size:11px; }
+    .spinRow{
+      margin-top:10px;
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+    }
+    .spinRow small{font-size:11px;color:var(--muted);}
+    .infoText{font-size:11px;color:var(--muted);margin-top:6px;}
+
+    /* result */
+    .resultBox{
+      margin-top:8px;
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(6,10,26,.96);
+      font-size:12px;
+      display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;
+    }
+    .resultMain b{display:block;font-size:13px;}
+    .resultMain span{font-size:11px;color:var(--muted);}
+    .resultWin{font-size:15px;font-weight:900;}
+    .resultWin.good{color:var(--good);}
+    .resultWin.bad{color:var(--bad);}
+
+    .toast{
+      position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
+      padding:9px 11px;border-radius:15px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(5,7,18,.96);
+      box-shadow:0 18px 55px rgba(0,0,0,.8);
+      font-size:12px;font-weight:800;
+      display:none;z-index:10;
+    }
+    .toast.show{display:block;animation:pop .18s ease-out;}
+    @keyframes pop{from{transform:translateX(-50%) translateY(8px);opacity:.2;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
+    .toast small{display:block;margin-top:2px;color:var(--muted);font-weight:600;}
+
+    footer{margin-top:14px;text-align:center;font-size:11px;color:rgba(159,176,255,.8);}
   </style>
 </head>
 <body>
-  <canvas id="confetti"></canvas>
+<div class="wrap">
+  <header>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="logo"></div>
+      <div class="titleBox">
+        <h1>BIKA Slot Demo</h1>
+        <span>Practice mode · MMK balance is local-only</span>
+      </div>
+    </div>
+    <nav>
+      <a href="index.html">Dashboard</a>
+      <a href="slot.html" class="active">Slot</a>
+      <a href="rocket.html">Rocket</a>
+    </nav>
+  </header>
 
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo"></div>
-        <div style="min-width:0;">
-          <h1>BIKA Slot • Balance UI</h1>
-          <div class="sub">
-            Cloudflare Worker → Render API
-            <div class="pill">
-              <span id="pillDot" class="pill-dot"></span>
-              <span id="pillText">Checking…</span>
-            </div>
+  <main class="card">
+    <div class="cardTitle">
+      <div>
+        <h2>🎰 Neon Fruits</h2>
+        <span>Single payline (middle row) · 3 of a kind ⇒ win</span>
+      </div>
+      <button class="secondary" onclick="resetDemo()">Reset Demo</button>
+    </div>
+
+    <!-- Wallet + bet -->
+    <div class="walletRow">
+      <div class="walletBox">
+        <div class="walletMain">
+          <div>
+            <b id="demoBalanceText">50,000 MMK</b>
+            <span>Demo balance (local)</span>
           </div>
+          <div class="walletMMK"><small>Balance</small></div>
         </div>
       </div>
-      <div class="actions">
-        <button class="secondary" onclick="window.location.href='index.html'">← Home</button>
-        <button class="good" onclick="ping()">Ping</button>
+      <div class="walletBox">
+        <div class="betTag">Bet per spin</div>
+        <div class="betRow">
+          <button class="chip active" data-bet="100" onclick="setBetChip(this)">100</button>
+          <button class="chip" data-bet="500" onclick="setBetChip(this)">500</button>
+          <button class="chip" data-bet="1000" onclick="setBetChip(this)">1,000</button>
+          <button class="chip" data-bet="5000" onclick="setBetChip(this)">5,000</button>
+        </div>
+        <div style="margin-top:6px;">
+          <input type="number" id="customBet" min="50" step="50" placeholder="Custom bet (MMK)" oninput="customBetChanged(this.value)" />
+        </div>
       </div>
-    </header>
+    </div>
 
-    <main class="grid">
-      <!-- Ping -->
-      <section class="card">
-        <div class="cardInner">
-          <div class="cardTitle">
-            <h2>1) Ping Test</h2>
-            <div class="hint">Server health / latency check</div>
-          </div>
-          <div class="row">
-            <button onclick="ping()">Ping API</button>
-            <button class="secondary tight" onclick="clearOut('pingOut')">Clear</button>
-          </div>
-          <div id="pingLoading" class="skeleton" style="display:none;"></div>
-          <pre id="pingOut">—</pre>
-        </div>
-      </section>
+    <!-- Slot machine -->
+    <div class="slotGrid">
+      <div class="slotReels" id="slotReels">
+        <!-- 5 x 3 = 15 cells -->
+      </div>
+      <div class="payline"></div>
+    </div>
 
-      <!-- Balance -->
-      <section class="card">
-        <div class="cardInner">
-          <div class="cardTitle">
-            <h2>2) Check Balance</h2>
-            <div class="hint">Count-up animation</div>
-          </div>
-          <div class="row">
-            <input id="userId" placeholder="Telegram userId (e.g. 8251006975)" inputmode="numeric" />
-            <button class="tight" onclick="getBalance()">Get Balance</button>
-          </div>
+    <div class="spinRow">
+      <button id="spinBtn" onclick="spin()">SPIN</button>
+      <button class="secondary" onclick="autoToggle()" id="autoBtn">Auto: OFF</button>
+      <div style="flex:1;min-width:140px;">
+        <small id="hint">Tip: 3 same symbols on the middle row = win.</small>
+      </div>
+    </div>
 
-          <div class="hint" style="margin-top:8px;">
-            Result: <span id="balBig" class="warn" style="font-weight:1000;">—</span>
-          </div>
+    <div class="resultBox">
+      <div class="resultMain">
+        <b id="resultTitle">Ready to spin</b>
+        <span id="resultDesc">Demo only – does not use your real BIKA wallet.</span>
+      </div>
+      <div class="resultWin" id="resultWin">Win 0</div>
+    </div>
 
-          <div id="balLoading" class="skeleton" style="display:none;"></div>
-          <pre id="balOut">—</pre>
-        </div>
-      </section>
+    <p class="infoText">
+      ဤ Slot Demo က practice mode သာဖြစ်ပြီး Telegram Bot Wallet ကို မထိပါဘူး။
+      နောက်ပိုင်း Real Slot ကိုချိတ်သွင်းမယ်ဆိုရင် Bet / Win တွေကို API နဲ့ ချိတ်ဆက်ပေးနိုင်မယ်။
+    </p>
+  </main>
 
-      <!-- Top10 -->
-      <section class="card span2">
-        <div class="cardInner">
-          <div class="cardTitle">
-            <h2>3) Top 10 Players</h2>
-            <div class="hint">Stagger + Glow + Particle burst</div>
-          </div>
-          <div class="row">
-            <button onclick="top10()">Load Top10</button>
-            <button class="secondary tight" onclick="clearTop()">Clear</button>
-          </div>
+  <footer>BIKA Slot Demo • Built for mobile • Telegram: @Official_Bika</footer>
+</div>
 
-          <div id="topLoading" class="skeleton" style="display:none;"></div>
-          <div id="lb" class="lb" style="display:none;"></div>
-          <pre id="topOut">—</pre>
-        </div>
-      </section>
-
-      <!-- Mini Slot UI Demo -->
-      <section class="card span2">
-        <div class="cardInner">
-          <div class="cardTitle">
-            <h2>🎰 Mini Slot Demo (UI only)</h2>
-            <div class="hint">Game-feel animation preview</div>
-          </div>
-
-          <div class="slotWrap">
-            <div class="slotBox">
-              <div class="slotTop">
-                <div class="slotTitle">BIKA • Spin Preview</div>
-                <div class="row" style="gap:8px; justify-content:flex-end;">
-                  <button class="secondary tight" onclick="slotReset()">Reset</button>
-                  <button class="good tight" onclick="slotSpin()">Spin</button>
-                </div>
-              </div>
-              <div class="slotReels">
-                <div class="reel" id="r1">🍒</div>
-                <div class="reel" id="r2">⭐</div>
-                <div class="reel" id="r3">🍋</div>
-              </div>
-              <div class="slotHint" id="slotHint">Tip: Spin ကိုနှိပ်ရင် reel animation အလန်းဖြစ်မယ် (API မချိတ်သေး)</div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>GitHub Pages • Cloudflare Worker Proxy • Render API</footer>
-  </div>
-
-  <div id="toast" class="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-  // ===== CONFIG =====
-  const API = "https://bika-web-proxy.dabllu2022.workers.dev";
+  const SYMS = ["🍒","🍋","🍉","🔔","⭐","7️⃣","💎"];
+  const MULTIPLIERS = {
+    "🍒": 3,
+    "🍋": 4,
+    "🍉": 5,
+    "🔔": 6,
+    "⭐": 8,
+    "7️⃣": 12,
+    "💎": 18
+  };
 
-  // ===== UI helpers =====
-  function toast(title, msg){
-    const t = document.getElementById("toast");
-    t.innerHTML = `${title}<small>${msg || ""}</small>`;
-    t.classList.add("show");
-    clearTimeout(window.__toastT);
-    window.__toastT = setTimeout(()=> t.classList.remove("show"), 2200);
-  }
-  function setLoading(id, on){ document.getElementById(id).style.display = on ? "block" : "none"; }
-  function pretty(obj){ return JSON.stringify(obj, null, 2); }
-  function clearOut(id){ document.getElementById(id).textContent = "—"; }
-  function fillMyId(){ document.getElementById("userId").value = "8251006975"; toast("Filled", "Sample Telegram userId inserted"); }
+  let demoBalance = 50000;
+  let currentBet = 100;
+  let spinning = false;
+  let autoMode = false;
+  let autoTimer = null;
+
+  const reelsEl = document.getElementById("slotReels");
+  const balanceText = document.getElementById("demoBalanceText");
+  const resultTitle = document.getElementById("resultTitle");
+  const resultDesc = document.getElementById("resultDesc");
+  const resultWin = document.getElementById("resultWin");
+  const hint = document.getElementById("hint");
+  const spinBtn = document.getElementById("spinBtn");
+
   function fmt(n){
-    const x = Number(n || 0);
-    if (!Number.isFinite(x)) return "0";
+    const x = Number(n||0);
     return x.toLocaleString("en-US");
   }
-  function esc(s){
-    return String(s ?? "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[m]));
+
+  function toast(title,msg){
+    const t = document.getElementById("toast");
+    t.innerHTML = title + (msg ? "<small>"+msg+"</small>" : "");
+    t.classList.add("show");
+    clearTimeout(window.__toastT);
+    window.__toastT = setTimeout(()=>t.classList.remove("show"),2200);
   }
 
-  // top status pill
-  const pillDot  = document.getElementById("pillDot");
-  const pillText = document.getElementById("pillText");
-
-  // ===== Count-up animation =====
-  function animateNumber(el, from, to, ms=850){
-    if (!el) return;
-    const start = performance.now();
-    const diff = to - from;
-    function tick(t){
-      const p = Math.min(1, (t - start) / ms);
-      const eased = 1 - Math.pow(1 - p, 3);
-      const v = Math.floor(from + diff * eased);
-      el.textContent = fmt(v) + " MMK";
-      if (p < 1) requestAnimationFrame(tick);
+  function initGrid(){
+    reelsEl.innerHTML = "";
+    for (let i=0;i<15;i++){
+      const c = document.createElement("div");
+      c.className = "reelCell";
+      c.textContent = SYMS[Math.floor(Math.random()*SYMS.length)];
+      reelsEl.appendChild(c);
     }
-    requestAnimationFrame(tick);
+    updateBalanceText();
   }
 
-  // ===== API fetch =====
-  async function apiFetch(url){
-    const r = await fetch(url);
-    let data = null;
-    try{ data = await r.json(); } catch(e){ data = { ok:false, status:r.status, error:"Invalid JSON" }; }
-    if (!r.ok){
-      return { ok:false, status:r.status, data, error: data?.error || data?.message || "Request failed" };
-    }
-    return data;
+  function updateBalanceText(){
+    balanceText.textContent = fmt(demoBalance) + " MMK";
   }
 
-  // ===== Actions =====
-  async function ping(){
-    const out = document.getElementById("pingOut");
-    setLoading("pingLoading", true);
-    out.textContent = "";
-    try{
-      const data = await apiFetch(API + "/ping");
-      out.textContent = pretty(data);
-      if (data?.ok){
-        toast("Ping OK", "Server responded");
-        pillDot.classList.add("ok");
-        pillText.textContent = "API Online";
-      }else{
-        pillDot.classList.remove("ok");
-        pillText.textContent = "API Error";
-      }
-    }catch(e){
-      out.textContent = "ERROR: " + e.message;
-      toast("Ping Error", e.message);
-      pillDot.classList.remove("ok");
-      pillText.textContent = "API Offline";
-    }finally{
-      setLoading("pingLoading", false);
-    }
+  function setBetChip(btn){
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    btn.classList.add("active");
+    currentBet = Number(btn.dataset.bet || 0);
+    document.getElementById("customBet").value = "";
+    hint.textContent = "Bet per spin: " + fmt(currentBet) + " MMK";
   }
 
-  async function getBalance(){
-    const out = document.getElementById("balOut");
-    const big = document.getElementById("balBig");
-    const userId = document.getElementById("userId").value.trim();
+  function customBetChanged(v){
+    const val = Number(v || 0);
+    if (!val) return;
+    currentBet = Math.max(50, Math.floor(val));
+    document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+    hint.textContent = "Custom bet: " + fmt(currentBet) + " MMK";
+  }
 
-    if (!userId){
-      out.textContent = "⚠️ Please enter userId first.";
-      toast("Missing", "userId ထည့်ပါ");
+  function resetDemo(){
+    demoBalance = 50000;
+    autoOff();
+    updateBalanceText();
+    resultTitle.textContent = "Demo reset";
+    resultDesc.textContent = "Balance restored to 50,000 MMK.";
+    resultWin.textContent = "Win 0";
+    resultWin.className = "resultWin";
+    hint.textContent = "Tip: 3 same symbols on the middle row = win.";
+    toast("Reset","Demo balance restored");
+  }
+
+  function pickSym(){
+    return SYMS[Math.floor(Math.random()*SYMS.length)];
+  }
+
+  async function spin(){
+    if (spinning) return;
+    if (currentBet <= 0){
+      toast("Invalid bet","Bet amount is zero.");
       return;
     }
-    if (!/^\d+$/.test(userId)){
-      out.textContent = "⚠️ userId must be numbers only.";
-      toast("Invalid", "userId က နံပါတ်ပဲဖြစ်ရမယ်");
+    if (demoBalance < currentBet){
+      toast("Balance low","Not enough demo balance.");
+      resultTitle.textContent = "Insufficient balance";
+      resultDesc.textContent = "Try lowering the bet or reset demo.";
+      resultWin.textContent = "Win 0";
+      resultWin.className = "resultWin bad";
+      autoOff();
       return;
     }
 
-    setLoading("balLoading", true);
-    out.textContent = "";
-    big.textContent = "Loading…";
-
-    try{
-      const data = await apiFetch(`${API}/balance?userId=${encodeURIComponent(userId)}`);
-      out.textContent = pretty(data);
-
-      if (data?.ok){
-        const bal = Number(data?.data?.balance || 0);
-        animateNumber(big, 0, bal, 900);
-        toast("Balance OK", `Balance: ${fmt(bal)} MMK`);
-      }else{
-        big.textContent = "—";
-        toast("Balance", data?.error || "Unknown");
-      }
-    }catch(e){
-      out.textContent = "ERROR: " + e.message;
-      big.textContent = "—";
-      toast("Error", e.message);
-    }finally{
-      setLoading("balLoading", false);
-    }
-  }
-
-  function clearTop(){
-    document.getElementById("lb").style.display = "none";
-    document.getElementById("lb").innerHTML = "";
-    document.getElementById("topOut").textContent = "—";
-  }
-
-  function rankLabel(i){
-    if (i===0) return "🥇";
-    if (i===1) return "🥈";
-    if (i===2) return "🥉";
-    return "#" + (i+1);
-  }
-
-  function tierTag(balance){
-    const b = Number(balance||0);
-    if (b <= 500) return { t:"Bronze", cls:"" };
-    if (b <= 5000) return { t:"Silver", cls:"" };
-    if (b <= 50000) return { t:"Gold", cls:"warn" };
-    if (b <= 500000) return { t:"Diamond", cls:"ok" };
-    return { t:"Legend", cls:"ok" };
-  }
-
-  // ===== Confetti =====
-  const confetti = document.getElementById("confetti");
-  const cctx = confetti.getContext("2d");
-  let particles = [];
-  function resizeCanvas(){
-    confetti.width = window.innerWidth * devicePixelRatio;
-    confetti.height = window.innerHeight * devicePixelRatio;
-    cctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-  }
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
-
-  function burst(x, y, count=70){
-    for (let i=0;i<count;i++){
-      particles.push({
-        x, y,
-        vx: (Math.random()*2-1)*6,
-        vy: (Math.random()*2-1)*6 - 2,
-        g: 0.12 + Math.random()*0.10,
-        life: 60 + Math.random()*30,
-        r: 2 + Math.random()*3,
-        a: 1
-      });
-    }
-  }
-  function step(){
-    cctx.clearRect(0,0,window.innerWidth, window.innerHeight);
-    particles = particles.filter(p => p.life > 0);
-    for (const p of particles){
-      p.vy += p.g;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= 1;
-      p.a = Math.max(0, p.life / 90);
-      cctx.globalAlpha = p.a;
-      cctx.fillStyle = "rgba(235,245,255,1)";
-      cctx.beginPath();
-      cctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      cctx.fill();
-    }
-    cctx.globalAlpha = 1;
-    requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-
-  async function top10(){
-    const out = document.getElementById("topOut");
-    const lb = document.getElementById("lb");
-
-    setLoading("topLoading", true);
-    out.textContent = "";
-    lb.style.display = "none";
-    lb.innerHTML = "";
-
-    try{
-      const data = await apiFetch(API + "/top10");
-      out.textContent = pretty(data);
-
-      const list = data?.data?.top10 || [];
-      if (!data?.ok || !Array.isArray(list) || list.length === 0){
-        toast("Top10", data?.error || "No data");
-        return;
-      }
-
-      burst(window.innerWidth * 0.5, 120, 90);
-
-      const html = list.map((u, i)=>{
-        const name = u?.username ? "@" + u.username : (u?.firstName || ("ID " + u.userId));
-        const sub = u?.username ? (u?.firstName ? u.firstName : "Player") : "No username";
-        const tag = tierTag(u?.balance);
-        const topCls = i===0 ? "top1" : i===1 ? "top2" : i===2 ? "top3" : "";
-        const glow = i<3 ? "glow" : "";
-        const crown = i===0 ? " 👑" : "";
-        const delay = (i * 70);
-
-        return `
-          <div class="lbItem ${topCls}" style="animation-delay:${delay}ms">
-            <div class="left">
-              <div class="rank ${glow}">${esc(rankLabel(i))}</div>
-              <div class="name">
-                <b>${esc(name)}${crown}</b>
-                <span>${esc(sub)} • ID: ${esc(u?.userId)}</span>
-              </div>
-            </div>
-            <div class="bal">
-              ${fmt(u?.balance)} <span class="tag ${tag.cls}">${esc(tag.t)}</span>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      lb.innerHTML = html;
-      lb.style.display = "grid";
-      toast("Top10 Loaded", "Leaderboard updated");
-    }catch(e){
-      out.textContent = "ERROR: " + e.message;
-      toast("Error", e.message);
-    }finally{
-      setLoading("topLoading", false);
-    }
-  }
-
-  // ===== Slot Demo =====
-  const SYMS = ["🍒","🍋","🍉","🔔","⭐","7️⃣","BAR"];
-  let spinning = false;
-  function pick(){ return SYMS[Math.floor(Math.random()*SYMS.length)]; }
-
-  function slotReset(){
-    if (spinning) return;
-    document.getElementById("r1").textContent = "🍒";
-    document.getElementById("r2").textContent = "⭐";
-    document.getElementById("r3").textContent = "🍋";
-    document.getElementById("slotHint").textContent = "Tip: Spin ကိုနှိပ်ရင် reel animation အလန်းဖြစ်မယ် (API မချိတ်သေး)";
-    toast("Slot", "Reset done");
-  }
-
-  async function slotSpin(){
-    if (spinning) return;
     spinning = true;
+    demoBalance -= currentBet;
+    updateBalanceText();
 
-    const r1 = document.getElementById("r1");
-    const r2 = document.getElementById("r2");
-    const r3 = document.getElementById("r3");
-    const hint = document.getElementById("slotHint");
+    resultTitle.textContent = "Spinning…";
+    resultDesc.textContent = "Good luck!";
+    resultWin.textContent = "Win 0";
+    resultWin.className = "resultWin";
 
-    r1.classList.add("spin");
-    r2.classList.add("spin");
-    r3.classList.add("spin");
-    hint.textContent = "Spinning… 🎛️";
+    const cells = Array.from(reelsEl.children);
+    cells.forEach(c=>c.classList.add("spin"));
 
     const t0 = Date.now();
     const timer = setInterval(()=>{
-      r1.textContent = pick();
-      r2.textContent = pick();
-      r3.textContent = pick();
-      if (Date.now() - t0 > 1100) clearInterval(timer);
-    }, 90);
+      cells.forEach(c=>c.textContent = pickSym());
+      if (Date.now()-t0>900) clearInterval(timer);
+    },90);
 
-    await sleep(1100);
-    r1.classList.remove("spin"); r1.textContent = pick();
-    await sleep(280);
-    r2.classList.remove("spin"); r2.textContent = pick();
-    await sleep(280);
-    r3.classList.remove("spin"); r3.textContent = pick();
-
-    const a=r1.textContent, b=r2.textContent, c=r3.textContent;
-    let vibe = "Try again 🍀";
-    if (a===b && b===c){
-      vibe = "JACKPOT! 💥";
-      burst(window.innerWidth*0.5, window.innerHeight*0.35, 120);
-    } else if (a===b || a===c || b===c){
-      vibe = "WIN GLOW ✨";
-      burst(window.innerWidth*0.5, window.innerHeight*0.35, 70);
+    await new Promise(r=>setTimeout(r,900));
+    // stop column by column
+    for (let col=0; col<5; col++){
+      for (let row=0; row<3; row++){
+        const idx = row*5 + col;
+        cells[idx].classList.remove("spin");
+        cells[idx].textContent = pickSym();
+      }
+      await new Promise(r=>setTimeout(r,120));
     }
-    hint.textContent = `Result: ${a} ${b} ${c} — ${vibe}`;
-    toast("Slot Demo", vibe);
+
+    // middle row indexes: 5..9
+    const midSyms = cells.slice(5,10).map(c=>c.textContent);
+    let win = 0;
+    let msg = "No win. Try again!";
+    let cls = "resultWin bad";
+
+    const allSame = midSyms.every(s => s===midSyms[0]);
+    if (allSame){
+      const sym = midSyms[0];
+      const multi = MULTIPLIERS[sym] || 3;
+      win = currentBet * multi;
+      demoBalance += win;
+      updateBalanceText();
+      msg = `3× ${sym} on middle line · x${multi}`;
+      cls = "resultWin good";
+      toast("WIN!","You won " + fmt(win) + " MMK");
+    }else{
+      toast("Spin finished","No win this time.");
+    }
+
+    resultTitle.textContent = win>0 ? "WIN GLOW ✨" : "Better luck next spin";
+    resultDesc.textContent = msg;
+    resultWin.textContent = "Win " + fmt(win);
+    resultWin.className = cls;
 
     spinning = false;
+
+    if (autoMode){
+      if (demoBalance < currentBet){
+        autoOff();
+      }else{
+        autoTimer = setTimeout(spin, 700);
+      }
+    }
   }
 
-  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+  function autoToggle(){
+    if (autoMode) autoOff();
+    else autoOn();
+  }
 
-  // Auto ping once on load
-  setTimeout(()=> ping(), 400);
+  function autoOn(){
+    if (demoBalance < currentBet){
+      toast("Auto","Not enough balance for auto-spin.");
+      return;
+    }
+    autoMode = true;
+    document.getElementById("autoBtn").textContent = "Auto: ON";
+    document.getElementById("autoBtn").classList.add("good");
+    toast("Auto spin","Tap again to stop.");
+    autoTimer = setTimeout(spin, 300);
+  }
+
+  function autoOff(){
+    autoMode = false;
+    clearTimeout(autoTimer);
+    document.getElementById("autoBtn").textContent = "Auto: OFF";
+    document.getElementById("autoBtn").classList.remove("good");
+  }
+
+  initGrid();
 </script>
 </body>
 </html>
