@@ -3,401 +3,578 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIKA Web • Rocket Game</title>
-  <meta name="theme-color" content="#0b1020" />
+  <title>BIKA Rocket Gift</title>
+  <meta name="theme-color" content="#050608" />
   <style>
     :root{
-      --bg0:#050814; --bg1:#060a1b;
-      --card: rgba(14, 20, 45, .85);
-      --stroke: rgba(48,63,120,.95);
-      --text:#eaf0ff; --muted:#9fb0ff;
-      --accent:#ff8b5c;
-      --shadow: 0 18px 50px rgba(0,0,0,.5);
-      --radius: 20px;
+      --bg0:#050608;
+      --bg1:#050608;
+      --card:#111318;
+      --card-soft:#171a21;
+      --stroke:rgba(255,255,255,.08);
+      --text:#f5f7ff;
+      --muted:#9aa3c7;
+      --accent:#33b5ff;
+      --accent2:#7c4dff;
+      --good:#3ae39b;
+      --bad:#ff5c7a;
+      --radius:18px;
     }
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box;}
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,system-ui;
       color:var(--text);
       background:
-        radial-gradient(1200px 800px at 15% 10%, rgba(104,131,255,.20), transparent 60%),
-        radial-gradient(900px 600px at 80% 20%, rgba(255,139,92,.16), transparent 60%),
-        linear-gradient(180deg,var(--bg0),var(--bg1));
+        radial-gradient(900px 700px at 0 0, rgba(124,77,255,.35), transparent 60%),
+        radial-gradient(900px 700px at 100% 0, rgba(51,181,255,.35), transparent 60%),
+        #050608;
       min-height:100vh;
-      padding:18px 14px 22px;
-      overflow-x:hidden;
+      display:flex;
+      flex-direction:column;
+      padding:10px 10px 0;
     }
-    .wrap{
-      max-width:960px;
+
+    .app{
+      max-width:520px;
       margin:0 auto;
       display:flex;
       flex-direction:column;
-      gap:14px;
+      height:100vh;
     }
+
+    /* Top bar */
     .topbar{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      padding:14px;
-      border-radius:18px;
-      border:1px solid var(--stroke);
-      background:linear-gradient(180deg,rgba(16,22,52,.9),rgba(9,13,32,.9));
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(10px);
+      padding:8px 4px 6px;
     }
-    .brand{
+    .backBtn{
       display:flex;
-      gap:10px;
       align-items:center;
-      min-width:0;
-    }
-    .logo{
-      width:40px; height:40px;
-      border-radius:14px;
-      background:
-        radial-gradient(circle at 25% 25%, rgba(255,139,92,.95), transparent 55%),
-        radial-gradient(circle at 75% 75%, rgba(104,131,255,.95), transparent 55%);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 14px 35px rgba(0,0,0,.5);
-    }
-    h1{ margin:0; font-size:17px; }
-    .sub{ margin-top:3px; font-size:12px; color:var(--muted); }
-
-    .actions{ display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
-    button{
-      appearance:none;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      padding:8px 11px;
-      background:linear-gradient(180deg,rgba(255,139,92,.22),rgba(10,13,32,.95));
-      color:var(--text);
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
       font-size:12px;
-      font-weight:800;
-      letter-spacing:.2px;
-      cursor:pointer;
-      box-shadow:0 14px 35px rgba(0,0,0,.35);
+      color:var(--text);
     }
-    button.secondary{
-      background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(10,13,32,.95));
+    .backBtn span.icon{
+      width:18px;height:18px;border-radius:999px;
+      display:grid;place-items:center;
+      background:rgba(255,255,255,.10);
+      font-size:13px;
     }
-
-    .grid{ display:grid; grid-template-columns:1fr; gap:14px; }
-    @media (min-width:780px){ .grid{ grid-template-columns:1.2fr .8fr; } }
-
-    .card{
-      border-radius:var(--radius);
-      border:1px solid rgba(255,255,255,.12);
-      background:var(--card);
-      box-shadow:var(--shadow);
-      padding:14px 14px 16px;
-      position:relative;
-      overflow:hidden;
-    }
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(420px 200px at 20% 0%, rgba(255,139,92,.18), transparent 55%),
-        radial-gradient(420px 220px at 80% 20%, rgba(104,131,255,.16), transparent 55%);
-      opacity:.9;
-      pointer-events:none;
-    }
-    .card-inner{ position:relative; }
-    .card h2{ margin:0 0 6px; font-size:15px; }
-    .hint{ font-size:12px; color:var(--muted); }
-
-    .rocket-area{
-      margin-top:10px;
+    .balanceBox{
       display:flex;
-      flex-direction:column;
       align-items:center;
-      gap:12px;
-    }
-    .sky{
-      width:100%;
-      max-width:360px;
-      height:220px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255,255,255,.16), transparent 60%),
-        linear-gradient(180deg, #0b1230, #060818);
-      position:relative;
-      overflow:hidden;
-    }
-    .stars{
-      position:absolute;
-      inset:0;
-      background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.9), transparent 60%),
-        radial-gradient(2px 2px at 80% 40%, rgba(255,255,255,.7), transparent 60%),
-        radial-gradient(1.6px 1.6px at 60% 10%, rgba(255,255,255,.7), transparent 60%),
-        radial-gradient(1.8px 1.8px at 15% 80%, rgba(255,255,255,.6), transparent 60%);
-      opacity:.8;
-    }
-    .planet{
-      position:absolute;
-      left:12px; bottom:8px;
-      width:70px; height:70px;
-      border-radius:999px;
-      background:radial-gradient(circle at 30% 25%, #ffe29f, #ef629f);
-      filter:blur(0.3px);
-      opacity:.85;
-    }
-    .rocket{
-      position:absolute;
-      left:50%;
-      bottom:20px;
-      transform:translateX(-50%);
-      width:40px;
-      height:90px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      transition: transform .7s cubic-bezier(.16,.8,.26,1.02);
-    }
-    .rocket-body{
-      width:32px; height:60px;
-      border-radius:20px;
-      background:linear-gradient(180deg,#fdfbfb,#ebedee);
-      border:2px solid rgba(12,17,40,.7);
-      position:relative;
-      overflow:hidden;
-    }
-    .window{
-      width:16px; height:16px;
-      border-radius:999px;
-      background:radial-gradient(circle at 30% 30%, #fff, #7f9cf5);
-      border:2px solid #1b2550;
-      position:absolute;
-      top:16px; left:50%;
-      transform:translateX(-50%);
-    }
-    .fin{
-      position:absolute;
-      bottom:-4px;
-      width:14px; height:14px;
-      background:linear-gradient(180deg,#f9735b,#ef4444);
-      border-radius:4px;
-    }
-    .fin.left{ left:-10px; transform:skewY(-10deg); }
-    .fin.right{ right:-10px; transform:skewY(10deg); }
-
-    .flame{
-      width:20px; height:26px;
-      border-radius:999px;
-      margin-top:4px;
-      background:radial-gradient(circle at 50% 0%, #fff, #ffbf63, #f9735b);
-      filter:blur(0.3px);
-      opacity:.9;
-      transform-origin:top;
-      animation: flame 0.25s ease-in-out infinite alternate;
-    }
-    @keyframes flame{
-      from{ transform:scaleY(1) translateY(0); opacity:.9; }
-      to{ transform:scaleY(0.8) translateY(2px); opacity:.7; }
-    }
-    .rocket.boost{
-      transform:translateX(-50%) translateY(-120px);
-    }
-
-    .bar-wrap{
-      width:100%;
-      max-width:360px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(7,11,28,.9);
-      padding:3px;
-    }
-    .bar{
-      height:14px;
-      border-radius:999px;
-      background:linear-gradient(90deg,#22c55e,#facc15,#f97316,#ef4444);
-      width:0%;
-      transition:width .25s linear;
-    }
-
-    .controls{
-      display:flex;
-      flex-wrap:wrap;
       gap:8px;
-      justify-content:center;
-      margin-top:10px;
     }
-    .status{
+    .chipBalance{
+      display:flex;align-items:center;gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.11);
+      font-size:12px;
+    }
+    .chipBalance span.icon{
+      width:18px;height:18px;border-radius:999px;
+      display:grid;place-items:center;
+      background:radial-gradient(circle at 30% 30%,#33b5ff,#7c4dff);
+      font-size:11px;
+    }
+    .balanceBox button{
+      width:26px;height:26px;border-radius:999px;
+      border:none;
+      background:rgba(255,255,255,.1);
+      display:grid;place-items:center;
+      color:var(--text);
+      font-size:17px;
+    }
+
+    /* Game header */
+    .gameHead{
+      margin-top:4px;
+      padding:6px 6px 4px;
+      display:flex;
+      justify-content:center;
+      position:relative;
+    }
+    .giftTag{
+      padding:4px 10px;
+      border-radius:999px;
+      background:linear-gradient(120deg,#7c4dff,#b162ff);
+      font-size:13px;
+      font-weight:600;
+      display:flex;align-items:center;gap:6px;
+      box-shadow:0 8px 25px rgba(0,0,0,.8);
+    }
+    .giftTag span.emoji{font-size:16px;}
+
+    /* Timer section */
+    .timerWrap{
       margin-top:8px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    .timerCircle{
+      width:200px;
+      height:200px;
+      border-radius:50%;
+      background:radial-gradient(circle at 50% 40%,#222633,#050608 70%);
+      display:grid;
+      place-items:center;
+      position:relative;
+      box-shadow:0 12px 40px rgba(0,0,0,.9);
+    }
+    .timerRing{
+      position:absolute;
+      inset:6px;
+      border-radius:50%;
+      background:
+        conic-gradient(#ff9a4b calc(var(--pct,0)*1%), rgba(255,255,255,.04) 0);
+    }
+    .timerCore{
+      position:absolute;
+      inset:16px;
+      border-radius:50%;
+      background:radial-gradient(circle at 50% 30%,#111319,#050608 70%);
+      display:grid;place-items:center;
+    }
+    .timerNumber{
+      font-size:54px;
+      font-weight:800;
+    }
+    .timerLabel{
       font-size:12px;
       color:var(--muted);
-      text-align:center;
+      margin-top:4px;
     }
 
-    .list{
+    /* Bet row */
+    .betRow{
       margin-top:10px;
-      display:grid;
-      gap:8px;
+      display:flex;
+      justify-content:center;
+      gap:6px;
+      flex-wrap:wrap;
     }
-    .item{
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(8,12,28,.95);
-      padding:9px 11px;
+    .betTag{
+      padding:5px 12px;
+      border-radius:999px;
+      background:#153157;
+      border:1px solid rgba(96,154,255,.9);
+      font-size:12px;
+      font-weight:700;
+    }
+    .multiChip{
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:12px;
+      background:rgba(33,39,52,1);
+      border:1px solid rgba(122,186,108,.6);
+      color:#a6f5bf;
+    }
+    .multiChip.red{
+      border-color:rgba(255,121,121,.7);
+      color:#ffb4c0;
+    }
+    .multiChip.purple{
+      border-color:rgba(156,129,255,.75);
+      color:#e6dbff;
+    }
+
+    /* Place bet button */
+    .placeWrap{
+      margin-top:12px;
+      padding:0 6px;
+    }
+    .placeBtn{
+      width:100%;
+      border:none;
+      border-radius:18px;
+      padding:12px;
+      font-size:16px;
+      font-weight:700;
+      color:#ffffff;
+      background:linear-gradient(135deg,#008dff,#2a5bff);
+      box-shadow:0 12px 40px rgba(0,0,0,.85);
+    }
+    .placeBtn:active{
+      transform:scale(.98);
+    }
+
+    /* Round info */
+    .roundInfo{
+      margin-top:8px;
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .roundInfo strong{color:var(--accent);}
+
+    /* Player list */
+    .playersCard{
+      margin-top:12px;
+      flex:1;
+      background:var(--card);
+      border-radius:20px 20px 0 0;
+      border-top:1px solid rgba(255,255,255,.06);
+      padding:10px 10px 4px;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+    .playersHead{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:8px;
-      font-size:12px;
+      margin-bottom:6px;
     }
-    .item span{ color:var(--muted); font-size:11px; }
-    .badge{
-      padding:3px 7px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
+    .playersHead h3{
+      margin:0;
+      font-size:13px;
+    }
+    .playersHead span{
       font-size:11px;
       color:var(--muted);
     }
+    .playerList{
+      overflow-y:auto;
+      padding-right:2px;
+    }
+    .playerItem{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      border-radius:14px;
+      padding:8px 10px;
+      background:var(--card-soft);
+      border:1px solid rgba(255,255,255,.04);
+      margin-bottom:6px;
+    }
+    .playerLeft{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .avatar{
+      width:32px;height:32px;border-radius:999px;
+      background:radial-gradient(circle at 30% 30%,#33b5ff,#7c4dff);
+      display:grid;place-items:center;
+      font-size:15px;
+      font-weight:700;
+      color:#fff;
+    }
+    .playerMeta{
+      display:flex;flex-direction:column;
+      min-width:0;
+    }
+    .playerMeta b{
+      font-size:13px;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+      overflow:hidden;
+      max-width:160px;
+    }
+    .playerMeta span{
+      font-size:11px;
+      color:var(--muted);
+    }
+    .playerRight{
+      text-align:right;
+      font-size:12px;
+    }
+    .playerRight .amount{
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:2px;
+    }
+    .playerRight .amount span.icon{
+      width:18px;height:18px;border-radius:999px;
+      display:grid;place-items:center;
+      background:radial-gradient(circle at 30% 30%,#33b5ff,#7c4dff);
+      font-size:11px;
+    }
+    .playerRight .multi{
+      font-size:11px;
+      color:var(--muted);
+    }
+    .playerRight .you{
+      font-size:11px;
+      color:var(--good);
+      font-weight:600;
+    }
 
-    footer{ margin-top:4px; text-align:center; font-size:11px; color:var(--muted); }
+    /* Bottom nav */
+    .bottomNav{
+      height:52px;
+      border-top:1px solid rgba(255,255,255,.08);
+      background:rgba(7,8,12,.96);
+      display:flex;
+      align-items:center;
+      justify-content:space-around;
+      padding:2px 6px 3px;
+    }
+    .navItem{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:2px;
+      font-size:10px;
+      color:var(--muted);
+    }
+    .navItem span.icon{
+      width:24px;height:24px;border-radius:999px;
+      background:rgba(255,255,255,.06);
+      display:grid;place-items:center;
+      font-size:14px;
+    }
+    .navItem.active span.icon{
+      background:linear-gradient(135deg,#008dff,#2a5bff);
+      color:#fff;
+    }
+    .navItem.active{
+      color:#ffffff;
+    }
+
+    @media (min-height:740px){
+      .timerCircle{width:220px;height:220px;}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo"></div>
-        <div>
-          <h1>BIKA Rocket Game (UI)</h1>
-          <div class="sub">Boost bar + launch animation • ပိုမိုပြီးနောက်ထပ် logic ချိတ်နိုင်မလား စမ်းသပ်ရန်</div>
-        </div>
+<div class="app">
+  <!-- Top bar -->
+  <div class="topbar">
+    <button class="backBtn" onclick="window.location.href='index.html'">
+      <span class="icon">←</span>
+      <span>Back</span>
+    </button>
+    <div class="balanceBox">
+      <div class="chipBalance" id="uiBalance">
+        <span class="icon">◆</span>
+        <span id="balanceText">0.60</span>
       </div>
-      <div class="actions">
-        <button class="secondary" onclick="window.location.href='index.html'">← Home</button>
-      </div>
-    </header>
-
-    <main class="grid">
-      <section class="card">
-        <div class="card-inner">
-          <h2>Rocket Launch Demo</h2>
-          <div class="hint">Hold / Tap လိုမျိုးမဟုတ်သေးဘူး – button နှိပ်ရင် boost bar တက်ပြီး rocket ပစ်ပေးမယ် (front-end only).</div>
-
-          <div class="rocket-area">
-            <div class="sky">
-              <div class="stars"></div>
-              <div class="planet"></div>
-              <div id="rocket" class="rocket">
-                <div class="rocket-body">
-                  <div class="window"></div>
-                  <div class="fin left"></div>
-                  <div class="fin right"></div>
-                </div>
-                <div class="flame"></div>
-              </div>
-            </div>
-
-            <div class="bar-wrap">
-              <div id="bar" class="bar"></div>
-            </div>
-
-            <div class="controls">
-              <button onclick="charge()">Start Boost</button>
-              <button class="secondary" onclick="resetRocket()">Reset</button>
-            </div>
-
-            <div id="status" class="status">
-              Status: Ready to launch ✨
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-inner">
-          <h2>Rocket Upgrade (Future idea)</h2>
-          <div class="hint">ဒီဘက်ကတော့အနာဂတ်မှာ game logic ချိတ်ချင်တဲ့နေရာ – UI ကိုပဲပုံရိပ်နဲ့ ပြထားတဲ့နေရာပါ။</div>
-
-          <div class="list">
-            <div class="item">
-              <div>
-                Thrust Power<br>
-                <span>Boost bar ပြည့်အောင် စုရမယ့် အင်အား</span>
-              </div>
-              <div class="badge">LV. 1</div>
-            </div>
-
-            <div class="item">
-              <div>
-                Fuel Capacity<br>
-                <span>Spin တစ်ခါ စမ်းသပ်ရင် မနည်းအောင် fuel ထည့်သွင်းမယ်</span>
-              </div>
-              <div class="badge">Coming soon</div>
-            </div>
-
-            <div class="item">
-              <div>
-                Skin &amp; Trail<br>
-                <span>Rocket design တွေကို game ထဲက skin လိုချိတ်သုံးနိုင်အောင်</span>
-              </div>
-              <div class="badge">Design only</div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>BIKA Rocket UI • Mobile friendly mockup</footer>
+      <button>+</button>
+    </div>
   </div>
 
+  <!-- Game title -->
+  <div class="gameHead">
+    <div class="giftTag">
+      <span class="emoji">🎁</span>
+      <span>Epic Gift</span>
+    </div>
+  </div>
+
+  <!-- Timer -->
+  <div class="timerWrap">
+    <div class="timerCircle">
+      <div class="timerRing" id="timerRing"></div>
+      <div class="timerCore">
+        <div class="timerNumber" id="timerNumber">8</div>
+        <div class="timerLabel" id="timerLabel">Next round in</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bets -->
+  <div class="betRow">
+    <div class="betTag">BET</div>
+    <div class="multiChip">1.64x</div>
+    <div class="multiChip">3.12x</div>
+    <div class="multiChip purple">7.03x</div>
+    <div class="multiChip red">1.04x</div>
+    <div class="multiChip">1.85x</div>
+  </div>
+
+  <div class="placeWrap">
+    <button class="placeBtn" id="placeBtn">Place bet</button>
+  </div>
+
+  <div class="roundInfo" id="roundInfo">
+    Round #<strong id="roundNo">1</strong> • Waiting for bets…
+  </div>
+
+  <!-- Players list -->
+  <div class="playersCard">
+    <div class="playersHead">
+      <h3>Players</h3>
+      <span id="playerCount">4 players joined</span>
+    </div>
+    <div class="playerList" id="playerList">
+      <!-- Players will be injected here -->
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottomNav">
+    <div class="navItem">
+      <span class="icon">🎒</span>
+      <span>Backpack</span>
+    </div>
+    <div class="navItem">
+      <span class="icon">👥</span>
+      <span>Invite</span>
+    </div>
+    <div class="navItem active" onclick="window.location.href='rocket.html'">
+      <span class="icon">🏠</span>
+      <span>Home</span>
+    </div>
+    <div class="navItem">
+      <span class="icon">🏆</span>
+      <span>Leaderboard</span>
+    </div>
+    <div class="navItem">
+      <span class="icon">💰</span>
+      <span>Earn</span>
+    </div>
+  </nav>
+</div>
+
 <script>
-  let charging = false;
-  let progress = 0;
-  let timer = null;
+  // ===== Demo state =====
+  const ROUND_DURATION = 10; // seconds
+  let remaining = ROUND_DURATION;
+  let roundNo = 1;
+  let timerId = null;
+  let hasBetThisRound = false;
+  let balance = 0.60; // demo balance (diamonds)
+  const balanceText = document.getElementById("balanceText");
+  const timerNumber = document.getElementById("timerNumber");
+  const timerRing = document.getElementById("timerRing");
+  const timerLabel = document.getElementById("timerLabel");
+  const roundInfo = document.getElementById("roundInfo");
+  const roundNoEl = document.getElementById("roundNo");
+  const placeBtn = document.getElementById("placeBtn");
+  const playerListEl = document.getElementById("playerList");
+  const playerCountEl = document.getElementById("playerCount");
 
-  const bar = document.getElementById("bar");
-  const rocket = document.getElementById("rocket");
-  const statusEl = document.getElementById("status");
+  const demoPlayers = [
+    { name:"AMIR HOSSEIN", amount:0.60, multi:"×1.00" },
+    { name:"sam", amount:1.50, multi:"×1.00" },
+    { name:"BLACK", amount:1.00, multi:"×1.00" },
+    { name:"Abu 🐱", amount:0.78, multi:"×1.00" },
+  ];
 
-  function updateBar(){
-    bar.style.width = progress + "%";
+  function fmt(x){
+    return Number(x).toFixed(2);
   }
 
-  function charge(){
-    if (charging) return;
-    charging = true;
-    statusEl.textContent = "Status: Charging boosters… ⛽";
-    progress = 0;
-    updateBar();
+  function renderPlayers(){
+    const all = [...demoPlayers];
+    if (hasBetThisRound){
+      all.unshift({ name:"You", amount:0.01, multi:"×1.00", you:true });
+    }
+    playerListEl.innerHTML = all.map(p => `
+      <div class="playerItem">
+        <div class="playerLeft">
+          <div class="avatar">${p.name[0] || "?"}</div>
+          <div class="playerMeta">
+            <b>${p.name}</b>
+            <span>${p.you ? "Your bet" : "Joined this round"}</span>
+          </div>
+        </div>
+        <div class="playerRight">
+          <div class="amount">
+            <span class="icon">◆</span>
+            <span>${fmt(p.amount)}</span>
+          </div>
+          <div class="multi">${p.multi} ${p.you ? '<span class="you">YOU</span>' : ""}</div>
+        </div>
+      </div>
+    `).join("");
+    playerCountEl.textContent = `${all.length} players joined`;
+  }
 
-    timer = setInterval(()=>{
-      progress += 4;
-      if (progress >= 100){
-        progress = 100;
-        clearInterval(timer);
-        launch();
+  function updateBalanceUI(){
+    balanceText.textContent = fmt(balance);
+  }
+
+  function updateTimerUI(){
+    timerNumber.textContent = remaining;
+    const pct = ((ROUND_DURATION - remaining) / ROUND_DURATION);
+    timerRing.style.setProperty("--pct", pct * 100);
+    if (remaining <= 0){
+      timerLabel.textContent = "Opening gift…";
+    }else{
+      timerLabel.textContent = hasBetThisRound ? "Your bet is locked" : "Next round in";
+    }
+  }
+
+  function startTimer(){
+    clearInterval(timerId);
+    remaining = ROUND_DURATION;
+    updateTimerUI();
+    timerId = setInterval(() => {
+      remaining--;
+      if (remaining <= 0){
+        remaining = 0;
+        updateTimerUI();
+        clearInterval(timerId);
+        resolveRound();
+      }else{
+        updateTimerUI();
       }
-      updateBar();
-    }, 90);
+    }, 1000);
   }
 
-  function launch(){
-    statusEl.textContent = "Status: Launch! 🚀";
-    rocket.classList.add("boost");
-    setTimeout(()=>{
-      statusEl.textContent = "Status: Mission complete ✓ Reset နိုပ်ပြီး ထပ်စမ်းပါ။";
-      charging = false;
-    }, 900);
+  function resolveRound(){
+    // Random multiplier between 1.01 and ~8x
+    const multi = (1 + Math.random() * 7).toFixed(2);
+    const multiText = `${multi}x`;
+    roundInfo.innerHTML = `Round #<strong>${roundNo}</strong> • Result: <strong>${multiText}</strong>`;
+
+    if (hasBetThisRound){
+      const win = 0.01 * multi;
+      balance += win;
+      updateBalanceUI();
+      placeBtn.textContent = `You won ${win.toFixed(3)} ◆`;
+    }else{
+      placeBtn.textContent = "Place bet";
+    }
+
+    // Reset bet for next round
+    hasBetThisRound = false;
+    renderPlayers();
+
+    // Start next round after short delay
+    setTimeout(() => {
+      roundNo++;
+      roundNoEl.textContent = roundNo;
+      roundInfo.innerHTML = `Round #<strong>${roundNo}</strong> • Waiting for bets…`;
+      placeBtn.textContent = "Place bet";
+      startTimer();
+    }, 2000);
   }
 
-  function resetRocket(){
-    clearInterval(timer);
-    charging = false;
-    progress = 0;
-    updateBar();
-    rocket.classList.remove("boost");
-    statusEl.textContent = "Status: Ready to launch ✨";
-  }
+  placeBtn.addEventListener("click", () => {
+    if (hasBetThisRound){
+      // already placed
+      return;
+    }
+    hasBetThisRound = true;
+    roundInfo.innerHTML = `Round #<strong>${roundNo}</strong> • Bet placed: <strong>0.01 ◆</strong>`;
+    placeBtn.textContent = "Bet placed";
+    renderPlayers();
+  });
+
+  // Init
+  updateBalanceUI();
+  renderPlayers();
+  startTimer();
 </script>
 </body>
 </html>
