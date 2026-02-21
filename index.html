@@ -3,405 +3,708 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIKA Game Web • Home</title>
-  <meta name="theme-color" content="#0b1020" />
+  <title>BIKA Game Hub • Dashboard</title>
+  <meta name="theme-color" content="#070b17" />
   <style>
     :root{
       --bg0:#070b17; --bg1:#0b1020;
       --card: rgba(17, 26, 51, .75);
-      --stroke: rgba(36,48,90,.85);
+      --stroke: rgba(36,48,90,.9);
+      --stroke2: rgba(42,58,107,.85);
       --text:#eaf0ff; --muted:#9fb0ff;
-      --accent:#a16bff;
-      --good:#38f6b2; --warn:#ffd37a; --bad:#ff5c7a;
-      --shadow: 0 16px 50px rgba(0,0,0,.45);
-      --radius: 18px;
+      --good:#38f6b2; --bad:#ff5c7a; --warn:#ffd37a;
+      --shadow: 0 18px 50px rgba(0,0,0,.50);
+      --radius: 20px; --radius2: 14px;
     }
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Noto Sans";
       color: var(--text);
       background:
-        radial-gradient(1200px 800px at 15% 10%, rgba(104,131,255,.18), transparent 60%),
-        radial-gradient(900px 600px at 85% 25%, rgba(56,246,178,.10), transparent 60%),
-        radial-gradient(1200px 800px at 55% 110%, rgba(255,92,122,.10), transparent 55%),
+        radial-gradient(1100px 800px at 15% 0%, rgba(104,131,255,.20), transparent 60%),
+        radial-gradient(900px 600px at 85% 25%, rgba(56,246,178,.12), transparent 60%),
+        radial-gradient(1200px 800px at 55% 110%, rgba(255,92,122,.14), transparent 55%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
-      min-height:100vh;
-      padding:18px 16px 22px;
-    }
-    .wrap{
-      max-width: 960px;
-      margin:0 auto;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
+      min-height: 100vh;
+      padding: 18px 14px 22px;
+      overflow-x:hidden;
     }
 
+    .fx{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+    .orb{ position:absolute; width:380px; height:380px; border-radius:999px; filter: blur(32px); opacity:.3; animation: floaty 10s ease-in-out infinite; }
+    .orb.one{ left:-120px; top:-120px; background: radial-gradient(circle, rgba(104,131,255,.9), transparent 60%); }
+    .orb.two{ right:-140px; top:160px; background: radial-gradient(circle, rgba(56,246,178,.85), transparent 60%); animation-duration: 12s; }
+    .orb.three{ left:10%; bottom:-220px; background: radial-gradient(circle, rgba(255,92,122,.85), transparent 60%); animation-duration: 14s; }
+    @keyframes floaty{ 0%,100%{ transform: translate(0,0) scale(1);} 50%{ transform: translate(18px, -14px) scale(1.05);} }
+
+    .wrap{ position:relative; z-index:1; max-width: 1020px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+
+    /* Top nav */
     .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
       padding:14px 14px;
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(17,26,51,.85), rgba(10,17,38,.65));
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      border-radius: 999px;
+      background: linear-gradient(120deg, rgba(8,13,32,.95), rgba(21,35,78,.92));
+      border:1px solid rgba(90,110,200,.75);
+      box-shadow: 0 16px 45px rgba(0,0,0,.6);
+      position:sticky; top:0; z-index:5;
+      backdrop-filter: blur(18px);
     }
-    .brand{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-width:0;
+    @media (max-width:640px){
+      .topbar{ border-radius:20px; flex-wrap:wrap; align-items:flex-start; }
     }
+    .brand{ display:flex; gap:10px; align-items:center; }
     .logo{
-      width:40px; height:40px;
-      border-radius:14px;
+      width:40px; height:40px; border-radius:14px; position:relative; overflow:hidden;
       background:
-        radial-gradient(circle at 25% 25%, rgba(56,246,178,.95), transparent 55%),
-        radial-gradient(circle at 75% 75%, rgba(104,131,255,.95), transparent 55%),
+        radial-gradient(circle at 30% 30%, rgba(56,246,178,.95), transparent 55%),
+        radial-gradient(circle at 70% 70%, rgba(104,131,255,.95), transparent 55%),
         linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 14px 35px rgba(0,0,0,.4);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 14px 35px rgba(0,0,0,.45);
     }
-    h1{
-      margin:0;
-      font-size:18px;
-      letter-spacing:.2px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .logo::after{
+      content:""; position:absolute; inset:-40%;
+      background: conic-gradient(from 180deg, transparent, rgba(255,255,255,.4), transparent);
+      animation: shine 3s linear infinite;
     }
-    .sub{
-      margin-top:4px;
-      font-size:12px;
-      color:var(--muted);
+    @keyframes shine{ to{ transform: rotate(360deg);} }
+
+    .brand-title{ display:flex; flex-direction:column; }
+    .brand-title h1{ margin:0; font-size:17px; letter-spacing:.3px; }
+    .brand-title span{ font-size:11px; color:var(--muted); }
+
+    .nav{
+      display:flex; gap:6px; flex-wrap:wrap; margin-left:auto;
     }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:4px 9px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(10,17,38,.7);
-      font-size:11px;
+    .nav a{
+      font-size:12px; text-decoration:none; color:var(--muted);
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(120,140,220,.5);
+      background: rgba(8,13,32,.9);
+    }
+    .nav a.active{
+      color:var(--text);
+      background: linear-gradient(120deg, rgba(104,131,255,.65), rgba(56,246,178,.55));
+      border-color: transparent;
+      font-weight:700;
+    }
+
+    /* Hero / status row */
+    .heroRow{
+      display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1.3fr); gap:10px;
       margin-top:6px;
     }
-    .pill-dot{
-      width:7px; height:7px;
-      border-radius:999px;
-      background:var(--bad);
+    @media (max-width:780px){
+      .heroRow{ grid-template-columns:1fr; }
     }
-    .pill-dot.ok{ background:var(--good); }
-
-    .top-actions{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:flex-end;
-      flex:0 0 auto;
-    }
-    .btn-sm{
-      appearance:none;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.20);
-      background:rgba(10,17,38,.8);
-      color:var(--text);
-      padding:7px 11px;
-      font-size:11px;
-      font-weight:600;
-      letter-spacing:.2px;
-      cursor:pointer;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
-    }
-    @media (min-width: 720px){
-      .grid{ grid-template-columns: repeat(2,minmax(0,1fr)); }
-      .span2{ grid-column: span 2; }
-    }
-
-    .card{
+    .heroCard, .statusCard{
       border-radius: var(--radius);
-      border:1px solid rgba(36,48,90,.90);
-      background: var(--card);
+      border:1px solid var(--stroke);
+      background: radial-gradient(120% 220% at 0% 0%, rgba(104,131,255,.32), transparent 55%) ,
+                  linear-gradient(180deg, rgba(11,17,40,.96), rgba(7,9,22,.95));
+      padding:14px 14px 16px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      position:relative;
+      overflow:hidden;
+    }
+    .heroCard h2{ margin:0 0 4px; font-size:17px; }
+    .heroCard p{ margin:0; font-size:13px; color:var(--muted); }
+
+    .heroTags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+    .tag{
+      font-size:11px; padding:5px 9px; border-radius:999px;
+      border:1px solid rgba(120,140,220,.55);
+      background: rgba(8,13,32,.95);
+      color:var(--muted);
+    }
+    .bigStatus{
+      margin-top:12px;
+      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    }
+    .pingDot{
+      width:14px; height:14px; border-radius:999px;
+      background:radial-gradient(circle, var(--good), rgba(56,246,178,.1));
+      box-shadow:0 0 0 0 rgba(56,246,178,.5);
+      animation:pulse 1.5s ease-out infinite;
+    }
+    @keyframes pulse{
+      0%{ box-shadow:0 0 0 0 rgba(56,246,178,.5); }
+      100%{ box-shadow:0 0 0 12px rgba(56,246,178,0); }
+    }
+    .statusText{ font-size:13px; }
+    .statusLabel{ font-size:11px; color:var(--muted); margin-top:4px; }
+
+    .statusCard .pillRow{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .pillMini{
+      padding:5px 9px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      font-size:11px; color:var(--muted);
+      background: rgba(8,13,32,.92);
+    }
+    .pillMini strong{ color:var(--text); }
+
+    /* Generic card */
+    .card{
+      margin-top:10px;
+      border-radius: var(--radius);
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(17,26,51,.92), rgba(8,11,26,.96));
+      box-shadow: var(--shadow);
       padding:14px 14px 16px;
       position:relative;
       overflow:hidden;
     }
-    .card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:
-        radial-gradient(420px 180px at 10% 0%, rgba(104,131,255,.18), transparent 55%),
-        radial-gradient(420px 220px at 90% 20%, rgba(56,246,178,.12), transparent 55%);
-      opacity:.8;
-      pointer-events:none;
+    .cardTitle{
+      display:flex; justify-content:space-between; align-items:flex-end; gap:10px;
+      margin-bottom:10px;
     }
-    .card-inner{ position:relative; }
+    .cardTitle h3{ margin:0; font-size:15px; }
+    .cardTitle span{ font-size:11px; color:var(--muted); }
 
-    .card h2{
-      margin:0 0 6px;
-      font-size:15px;
-    }
-    .hint{ font-size:12px; color:var(--muted); }
+    .row{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    .row > *{ flex:1; min-width:160px; }
 
-    .game-list{
-      margin-top:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .game-item{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(9,15,34,.85);
-      padding:11px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .game-main{
-      display:flex;
-      align-items:center;
-      gap:9px;
-      min-width:0;
-    }
-    .game-icon{
-      width:34px; height:34px;
-      border-radius:12px;
-      display:grid;
-      place-items:center;
-      font-size:18px;
-      background:rgba(16,24,52,.9);
+    input{
+      width:100%;
+      padding:11px 11px;
+      border-radius: 15px;
       border:1px solid rgba(255,255,255,.12);
-      flex:0 0 auto;
+      background: rgba(10,17,38,.8);
+      color:var(--text);
+      outline:none;
+      font-size:13px;
     }
-    .game-text{
+    input::placeholder{ color:rgba(159,176,255,.6);}
+    input:focus{
+      border-color: rgba(104,131,255,.8);
+      box-shadow:0 0 0 3px rgba(104,131,255,.35);
+    }
+
+    button{
+      appearance:none;
+      border-radius: 15px;
+      border:1px solid rgba(255,255,255,.16);
+      padding:10px 12px;
+      background: linear-gradient(180deg, rgba(104,131,255,.4), rgba(9,14,34,.98));
+      color:var(--text);
+      font-weight:800;
+      font-size:13px;
+      letter-spacing:.2px;
+      cursor:pointer;
+      box-shadow:0 14px 40px rgba(0,0,0,.55);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    }
+    button:active{ transform:translateY(0) scale(.98); box-shadow:0 8px 24px rgba(0,0,0,.6);}
+    button:hover{ transform:translateY(-1px); box-shadow:0 18px 48px rgba(0,0,0,.7); border-color:rgba(104,131,255,.8);}
+    button.secondary{
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(9,14,34,.98));
+    }
+    button.good{
+      background: linear-gradient(180deg, rgba(56,246,178,.4), rgba(9,14,34,.98));
+    }
+
+    /* Balance display */
+    .balBox{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.12);
+      background: radial-gradient(180% 220% at 0% 0%, rgba(104,131,255,.25), transparent 60%),
+                  rgba(7,11,28,.98);
       display:flex;
       flex-direction:column;
+      gap:4px;
       font-size:13px;
-      min-width:0;
     }
-    .game-text b{
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .balTop{
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
     }
-    .game-text span{
-      margin-top:2px;
-      color:var(--muted);
-      font-size:11px;
+    .balName b{ font-size:14px; }
+    .balName span{ display:block; font-size:11px; color:var(--muted); }
+    .balValue{
+      font-size:18px; font-weight:900;
     }
+    .balValue small{
+      font-size:11px; color:var(--muted); font-weight:600;
+    }
+    .balMeta{ font-size:11px; color:var(--muted); display:flex; justify-content:space-between; gap:6px; flex-wrap:wrap; margin-top:4px;}
 
-    .game-btn{
-      appearance:none;
-      border-radius:999px;
-      border:none;
-      padding:8px 13px;
-      background:linear-gradient(180deg, rgba(161,107,255,.85), rgba(104,131,255,.85));
-      color:#fff;
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:.2px;
-      cursor:pointer;
-      flex:0 0 auto;
-      box-shadow:0 10px 30px rgba(0,0,0,.45);
+    /* Leaderboard */
+    .lb{ margin-top:8px; display:grid; gap:8px; }
+    .lbItem{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(8,12,30,.96);
+      padding:9px 11px;
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      box-shadow:0 12px 28px rgba(0,0,0,.35);
+      transform: translateY(10px);
+      opacity:0;
+      animation:enter .45s ease forwards;
     }
-    .game-btn:active{ transform:translateY(1px); box-shadow:0 6px 18px rgba(0,0,0,.4); }
+    @keyframes enter{ to{ transform:translateY(0); opacity:1;} }
 
-    .btn-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
+    .lbItem.top1{ border-color:rgba(255,211,122,.7); box-shadow: 0 18px 45px rgba(255,211,122,.2), 0 16px 48px rgba(0,0,0,.6);}
+    .lbItem.top2{ border-color:rgba(159,176,255,.7);}
+    .lbItem.top3{ border-color:rgba(56,246,178,.7);}
+
+    .lbLeft{ display:flex; align-items:center; gap:8px; min-width:0; }
+    .rank{
+      width:38px; height:38px; border-radius:14px; border:1px solid rgba(255,255,255,.14);
+      display:grid; place-items:center;
+      background: rgba(6,10,26,.98);
+      font-size:17px; font-weight:900;
     }
-    .btn-ghost{
-      appearance:none;
-      border-radius:999px;
+    .lbName{ display:flex; flex-direction:column; min-width:0; }
+    .lbName b{ font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52vw;}
+    .lbName span{ font-size:11px; color:var(--muted); }
+    .lbBal{ font-size:13px; font-weight:900; text-align:right; flex:0 0 auto; }
+    .lbBal span{ display:inline-block; margin-left:6px; padding:3px 7px; border-radius:999px; border:1px solid rgba(255,255,255,.16); font-size:10px;}
+
+    .tagBronze{ color:#ffd37a;}
+    .tagSilver{ color:#c7d4ff;}
+    .tagGold{ color:#ffe37a;}
+    .tagDiamond{ color:#9ff6ff;}
+    .tagLegend{ color:#38f6b2;}
+
+    /* Slot preview mini – keep simple */
+    .slotMiniWrap{ margin-top:8px; display:grid; gap:8px; }
+    .slotMiniTop{ display:flex; justify-content:space-between; gap:8px; align-items:center; }
+    .slotTag{ font-size:11px; color:var(--muted); }
+    .slotReels{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
+    }
+    .miniReel{
+      height:64px; border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,.08), transparent 60%), rgba(8,12,30,.98);
+      display:grid; place-items:center; font-size:30px;
+    }
+    .miniReel.spin{ animation:reelSpin .5s ease-in-out infinite;}
+    @keyframes reelSpin{
+      0%{ transform:translateY(0); filter:blur(0);}
+      50%{ transform:translateY(-3px); filter:blur(.4px);}
+      100%{ transform:translateY(0); filter:blur(0);}
+    }
+    .slotHint{ font-size:11px; color:var(--muted); margin-top:2px;}
+
+    /* Toast */
+    .toast{
+      position:fixed; left:50%; bottom:16px; transform:translateX(-50%);
+      padding:9px 11px;
+      border-radius:15px;
       border:1px solid rgba(255,255,255,.16);
-      background:rgba(10,17,38,.75);
-      color:var(--text);
-      padding:8px 12px;
+      background:rgba(5,7,18,.94);
+      box-shadow:0 18px 55px rgba(0,0,0,.8);
+      backdrop-filter:blur(16px);
       font-size:12px;
-      cursor:pointer;
-      font-weight:600;
-      letter-spacing:.2px;
+      font-weight:800;
+      display:none;
+      z-index:10;
     }
-
-    .ping-status{
-      margin-top:10px;
-      font-size:12px;
+    .toast.show{ display:block; animation:pop .18s ease-out;}
+    @keyframes pop{
+      from{ transform:translateX(-50%) translateY(8px); opacity:.2;}
+      to{ transform:translateX(-50%) translateY(0); opacity:1;}
     }
-    .ping-status span{ font-weight:700; }
-    .ok{ color:var(--good); }
-    .bad{ color:var(--bad); }
+    .toast small{ display:block; margin-top:2px; color:var(--muted); font-weight:600;}
 
     footer{
-      margin-top:4px;
-      text-align:center;
-      font-size:11px;
-      color:var(--muted);
+      margin-top:14px; text-align:center; font-size:11px; color:rgba(159,176,255,.78);
     }
-    a{ color:inherit; text-decoration:none; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo"></div>
+<div class="fx">
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
+</div>
+
+<div class="wrap">
+  <!-- Top nav -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="brand-title">
+        <h1>BIKA Game Hub</h1>
+        <span>Telegram Store · Game Wallet · Live Stats</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="active">Dashboard</a>
+      <a href="slot.html">Slot Game</a>
+      <a href="rocket.html">Rocket</a>
+    </nav>
+  </header>
+
+  <!-- Hero / ping -->
+  <section class="heroRow">
+    <div class="heroCard">
+      <h2>Welcome, Commander 🎮</h2>
+      <p>Check wallet balance, view top players and preview game animations — all optimized for mobile.</p>
+
+      <div class="heroTags">
+        <span class="tag">MLBB · PUBG · Telegram Premium</span>
+        <span class="tag">Wallet: MMK</span>
+        <span class="tag">BIKA Store Bot Connected</span>
+      </div>
+
+      <div class="bigStatus">
+        <div class="pingDot" id="pingDot"></div>
         <div>
-          <h1>BIKA Game Web</h1>
-          <div class="sub">
-            Telegram Bot UI • Mobile First
-            <div class="pill">
-              <span id="pill-dot" class="pill-dot"></span>
-              <span id="pill-text">Checking API…</span>
-            </div>
-          </div>
+          <div class="statusText" id="pingStatus">Checking API status…</div>
+          <div class="statusLabel" id="pingTime">Last ping: —</div>
         </div>
       </div>
-      <div class="top-actions">
-        <button class="btn-sm" onclick="window.location.href='slot.html'">Open Slot Page</button>
-        <button class="btn-sm" onclick="ping()">Ping API</button>
+    </div>
+
+    <aside class="statusCard">
+      <div class="pillRow">
+        <div class="pillMini">Origin: <strong id="originText">—</strong></div>
       </div>
-    </header>
-
-    <main class="grid">
-      <section class="card span2">
-        <div class="card-inner">
-          <h2>Main Menu</h2>
-          <div class="hint">Page သုံးခုလုံးကို ဖုန်းအဆင်ပြေဖို့ သီးသန့်နေရာထောင်ပေးထားပါတယ်။</div>
-          <div class="game-list">
-            <div class="game-item">
-              <div class="game-main">
-                <div class="game-icon">🎰</div>
-                <div class="game-text">
-                  <b>Slot Game • Balance UI</b>
-                  <span>Ping / Balance / Top10 + Slot demo</span>
-                </div>
-              </div>
-              <button class="game-btn" onclick="window.location.href='slot.html'">Open</button>
-            </div>
-
-            <div class="game-item">
-              <div class="game-main">
-                <div class="game-icon">🚀</div>
-                <div class="game-text">
-                  <b>Rocket Game</b>
-                  <span>Boost &amp; Launch animation (UI only)</span>
-                </div>
-              </div>
-              <button class="game-btn" onclick="window.location.href='rocket.html'">Open</button>
-            </div>
-
-            <div class="game-item">
-              <div class="game-main">
-                <div class="game-icon">🤖</div>
-                <div class="game-text">
-                  <b>BIKA Telegram Bot</b>
-                  <span>@BIKA Store / Game Bot link ထည့်သုံးလို့ရမယ်</span>
-                </div>
-              </div>
-              <!-- Bot link ကို နောက်မှ မင်း url နဲ့ပြင် -->
-              <button class="game-btn" onclick="window.open('https://t.me/your_bot_here','_blank')">Open Bot</button>
-            </div>
-          </div>
+      <div style="margin-top:16px;">
+        <div class="statusLabel">Quick actions</div>
+        <div class="row" style="margin-top:8px;">
+          <button class="good" onclick="ping()">Refresh Ping</button>
+          <button class="secondary" onclick="fillMyId()">Use my Telegram ID</button>
         </div>
-      </section>
+      </div>
+    </aside>
+  </section>
 
-      <section class="card">
-        <div class="card-inner">
-          <h2>API Status</h2>
-          <div class="hint">Cloudflare Worker → Render (proxy) စစ်ကြည့်ဖို့ small tool.</div>
+  <!-- Balance card -->
+  <section class="card">
+    <div class="cardTitle">
+      <div>
+        <h3>Wallet Balance</h3>
+        <span>Enter Telegram userId to preview wallet.</span>
+      </div>
+      <button class="secondary" onclick="fillMyId()">My ID</button>
+    </div>
 
-          <div class="btn-row">
-            <button class="btn-ghost" onclick="ping()">Ping Now</button>
-            <button class="btn-ghost" onclick="lastOut.textContent='—'">Clear</button>
-          </div>
+    <div class="row">
+      <input id="userId" placeholder="Telegram userId (e.g. 8251006975)" />
+      <button onclick="getBalance()">Get Balance</button>
+    </div>
 
-          <div class="ping-status" id="pingStatus">
-            Status: <span>Waiting…</span>
-          </div>
-          <pre id="pingOut" style="
-            margin-top:10px;
-            font-size:11px;
-            border-radius:14px;
-            border:1px solid rgba(255,255,255,.12);
-            background:rgba(8,13,30,.9);
-            padding:9px 10px;
-            max-height:160px;
-            overflow:auto;
-            white-space:pre-wrap;
-            word-break:break-word;
-          ">—</pre>
+    <div class="balBox" id="balBox">
+      <div class="balTop">
+        <div class="balName">
+          <b id="balName">No user loaded</b>
+          <span id="balId">ID: —</span>
         </div>
-      </section>
+        <div class="balValue" id="balBig">0 MMK</div>
+      </div>
+      <div class="balMeta">
+        <span id="balUpdated">Updated: —</span>
+        <span id="balStatus">Status: Waiting for request…</span>
+      </div>
+    </div>
+  </section>
 
-      <section class="card">
-        <div class="card-inner">
-          <h2>Usage Tips</h2>
-          <ul style="margin:8px 0 0; padding-left:18px; font-size:12px; color:var(--muted); line-height:1.5;">
-            <li>Slot Page ကနေ Real API ping / balance / top10 တွေ ခေါ်သုံးမယ်။</li>
-            <li>Rocket Page က UI only – အနာဂတ်မှာ mini game logic ချိတ်နိုင်မယ်။</li>
-            <li>ဒီ Home page က menu + API ping summary လိုပဲထားသုံးရင်ရပြီ။</li>
-          </ul>
+  <!-- Top players -->
+  <section class="card">
+    <div class="cardTitle">
+      <div>
+        <h3>Top 10 Players</h3>
+        <span>Leaderboard from BIKA Store Bot</span>
+      </div>
+      <button class="good" onclick="top10()">Load Top10</button>
+    </div>
+    <div id="lb" class="lb"></div>
+    <div id="lbEmpty" style="font-size:12px;color:var(--muted);margin-top:6px;">Tap “Load Top10” to view leaderboard.</div>
+  </section>
+
+  <!-- Mini slot promo -->
+  <section class="card">
+    <div class="cardTitle">
+      <div>
+        <h3>🎰 BIKA Mini Slot Preview</h3>
+        <span>UI animation only — full game in Slot page</span>
+      </div>
+      <a href="slot.html" style="text-decoration:none;">
+        <button class="secondary">Go to Slot</button>
+      </a>
+    </div>
+
+    <div class="slotMiniWrap">
+      <div class="slotMiniTop">
+        <div>
+          <div class="slotTag">Single spin preview</div>
+          <div class="slotHint" id="slotMiniHint">Tap Spin to feel the animation.</div>
         </div>
-      </section>
-    </main>
+        <button class="good" onclick="slotMiniSpin()">Spin</button>
+      </div>
+      <div class="slotReels">
+        <div class="miniReel" id="m1">⭐</div>
+        <div class="miniReel" id="m2">🍒</div>
+        <div class="miniReel" id="m3">🔔</div>
+      </div>
+    </div>
+  </section>
 
-    <footer>
-      BIKA Game Web • GitHub Pages + Cloudflare Workers
-    </footer>
-  </div>
+  <footer>
+    BIKA Game Hub • GitHub Pages + Cloudflare Worker • Telegram: @Official_Bika
+  </footer>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script>
-  const API = "https://bika-web-proxy.dabllu2022.workers.dev";
+  // ==== CONFIG ====
+  const API = "https://bika-web-proxy.dabllu2022.workers.dev"; // Cloudflare Worker
+  const API_KEY = "BikaWeb2026_268726"; // not sent from browser (Worker holds real secret)
+  document.getElementById("originText").textContent = "GitHub Pages";
 
-  const pillDot   = document.getElementById("pill-dot");
-  const pillText  = document.getElementById("pill-text");
-  const statusBox = document.getElementById("pingStatus").querySelector("span");
-  const lastOut   = document.getElementById("pingOut");
+  // ==== Helpers ====
+  function toast(title, msg){
+    const t = document.getElementById("toast");
+    t.innerHTML = title + (msg ? "<small>"+msg+"</small>" : "");
+    t.classList.add("show");
+    clearTimeout(window.__toastT);
+    window.__toastT = setTimeout(()=> t.classList.remove("show"), 2200);
+  }
+  function fillMyId(){
+    document.getElementById("userId").value = "8251006975";
+    toast("ID filled","Sample Telegram userId inserted");
+  }
+  function fmt(n){
+    const x = Number(n || 0);
+    if (!Number.isFinite(x)) return "0";
+    return x.toLocaleString("en-US");
+  }
+  function esc(s){
+    return String(s ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
 
+  // Count-up animation
+  function animateNumber(el, from, to, ms=850){
+    if (!el) return;
+    const start = performance.now();
+    const diff = to - from;
+    function tick(t){
+      const p = Math.min(1, (t - start) / ms);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = Math.floor(from + diff * eased);
+      el.textContent = fmt(v) + " MMK";
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  async function apiFetch(url){
+    const r = await fetch(url);
+    let data = null;
+    try{ data = await r.json(); }catch(e){ data = { ok:false, error:"Invalid JSON", status:r.status }; }
+    if (!r.ok){
+      return { ok:false, status:r.status, error:data?.error || data?.message || "Request failed", raw:data };
+    }
+    return data;
+  }
+
+  // ==== Ping ====
   async function ping(){
+    const dot = document.getElementById("pingDot");
+    const statusEl = document.getElementById("pingStatus");
+    const timeEl = document.getElementById("pingTime");
+
+    statusEl.textContent = "Pinging server…";
+    dot.style.background = "radial-gradient(circle, var(--warn), rgba(255,211,122,.2))";
+
     try{
-      statusBox.textContent = "Pinging…";
-      statusBox.className = "";
-      const r = await fetch(API + "/ping");
-      const data = await r.json();
-      lastOut.textContent = JSON.stringify(data, null, 2);
+      const data = await apiFetch(API + "/ping");
       if (data.ok){
-        statusBox.textContent = "Online";
-        statusBox.className = "ok";
-        pillDot.classList.add("ok");
-        pillText.textContent = "API Online";
+        dot.style.background = "radial-gradient(circle, var(--good), rgba(56,246,178,.2))";
+        statusEl.textContent = "API Online · pong";
+        timeEl.textContent = "Last ping: " + (data.time || new Date().toISOString());
+        toast("Ping OK","Server responded");
       }else{
-        statusBox.textContent = "Error";
-        statusBox.className = "bad";
-        pillDot.classList.remove("ok");
-        pillText.textContent = "API Error";
+        dot.style.background = "radial-gradient(circle, var(--bad), rgba(255,92,122,.2))";
+        statusEl.textContent = "API Error";
+        timeEl.textContent = data.error || "Unknown error";
+        toast("Ping Error", data.error || "");
       }
     }catch(e){
-      lastOut.textContent = "ERROR: " + e.message;
-      statusBox.textContent = "Offline";
-      statusBox.className = "bad";
-      pillDot.classList.remove("ok");
-      pillText.textContent = "API Offline";
+      dot.style.background = "radial-gradient(circle, var(--bad), rgba(255,92,122,.2))";
+      statusEl.textContent = "Network error";
+      timeEl.textContent = e.message;
+      toast("Ping Error", e.message);
     }
   }
 
-  // auto ping once
-  setTimeout(ping, 600);
+  // ==== Balance ====
+  async function getBalance(){
+    const userId = document.getElementById("userId").value.trim();
+    const nameEl = document.getElementById("balName");
+    const idEl = document.getElementById("balId");
+    const bigEl = document.getElementById("balBig");
+    const upEl = document.getElementById("balUpdated");
+    const stEl = document.getElementById("balStatus");
+
+    if (!userId){
+      toast("Missing","userId ထည့်ပါ");
+      stEl.textContent = "Status: userId is required.";
+      return;
+    }
+    if (!/^\d+$/.test(userId)){
+      toast("Invalid","userId က နံပါတ်ပဲဖြစ်ရမယ်");
+      stEl.textContent = "Status: userId must be numbers only.";
+      return;
+    }
+
+    stEl.textContent = "Status: Loading…";
+    nameEl.textContent = "Loading…";
+    idEl.textContent = "ID: " + userId;
+    bigEl.textContent = "0 MMK";
+
+    try{
+      const data = await apiFetch(`${API}/balance?userId=${encodeURIComponent(userId)}`);
+      if (!data.ok){
+        toast("Balance Error", data.error || "");
+        nameEl.textContent = "No user loaded";
+        bigEl.textContent = "0 MMK";
+        stEl.textContent = "Status: " + (data.error || "Failed to fetch.");
+        return;
+      }
+
+      // API may return balance at root or inside data
+      const uName = data.username || data.data?.username || "Unknown";
+      const fName = data.firstName || data.data?.firstName || "";
+      const rawBal = (data.balance ?? data.data?.balance ?? 0);
+      const bal = Number(rawBal || 0);
+      const updated = data.updatedAt || data.data?.updatedAt || null;
+
+      nameEl.textContent = fName ? `${fName} (@${uName})` : `@${uName}`;
+      idEl.textContent = "ID: " + (data.userId || data.data?.userId || userId);
+      animateNumber(bigEl, 0, bal, 900);
+      upEl.textContent = "Updated: " + (updated ? new Date(updated).toLocaleString() : "—");
+      stEl.textContent = "Status: Balance loaded";
+      toast("Balance OK", `Balance: ${fmt(bal)} MMK`);
+    }catch(e){
+      toast("Error", e.message);
+      stEl.textContent = "Status: " + e.message;
+      nameEl.textContent = "No user loaded";
+      bigEl.textContent = "0 MMK";
+    }
+  }
+
+  // ==== Leaderboard ====
+  function tierTag(balance){
+    const b = Number(balance||0);
+    if (b <= 500) return { text:"Bronze", cls:"tagBronze" };
+    if (b <= 5000) return { text:"Silver", cls:"tagSilver" };
+    if (b <= 50000) return { text:"Gold", cls:"tagGold" };
+    if (b <= 500000) return { text:"Diamond", cls:"tagDiamond" };
+    return { text:"Legend", cls:"tagLegend" };
+  }
+  function rankLabel(i){
+    if (i===0) return "🥇";
+    if (i===1) return "🥈";
+    if (i===2) return "🥉";
+    return "#" + (i+1);
+  }
+
+  async function top10(){
+    const lb = document.getElementById("lb");
+    const empty = document.getElementById("lbEmpty");
+    lb.innerHTML = "";
+    empty.textContent = "Loading leaderboard…";
+
+    try{
+      const data = await apiFetch(API + "/top10");
+      if (!data.ok){
+        toast("Top10 Error", data.error || "");
+        empty.textContent = data.error || "Failed to load leaderboard.";
+        return;
+      }
+
+      const list =
+        Array.isArray(data.top10) ? data.top10 :
+        Array.isArray(data.data?.top10) ? data.data.top10 :
+        Array.isArray(data.data) ? data.data :
+        [];
+
+      if (!list.length){
+        empty.textContent = "No data.";
+        toast("Top10","No players found");
+        return;
+      }
+
+      const html = list.map((u,i)=>{
+        const name = u.username ? "@"+u.username : (u.firstName || ("ID " + u.userId));
+        const sub = (u.firstName && u.username) ? u.firstName : (u.firstName || "Player");
+        const tag = tierTag(u.balance);
+        const topCls = i===0 ? "top1" : i===1 ? "top2" : i===2 ? "top3" : "";
+        const delay = i * 70;
+        return `
+          <div class="lbItem ${topCls}" style="animation-delay:${delay}ms">
+            <div class="lbLeft">
+              <div class="rank">${esc(rankLabel(i))}</div>
+              <div class="lbName">
+                <b>${esc(name)}</b>
+                <span>${esc(sub)} • ID: ${esc(u.userId)}</span>
+              </div>
+            </div>
+            <div class="lbBal">
+              ${fmt(u.balance)}
+              <span class="${tag.cls}">${tag.text}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+      lb.innerHTML = html;
+      empty.textContent = "";
+      toast("Top10 Loaded","Leaderboard updated");
+    }catch(e){
+      empty.textContent = e.message;
+      toast("Error", e.message);
+    }
+  }
+
+  // ==== Mini slot preview ====
+  const SYMS = ["🍒","🍋","🍉","🔔","⭐","7️⃣","💎"];
+  function pickSym(){ return SYMS[Math.floor(Math.random()*SYMS.length)]; }
+
+  async function slotMiniSpin(){
+    const m1 = document.getElementById("m1");
+    const m2 = document.getElementById("m2");
+    const m3 = document.getElementById("m3");
+    const hint = document.getElementById("slotMiniHint");
+
+    [m1,m2,m3].forEach(m => m.classList.add("spin"));
+    hint.textContent = "Spinning…";
+
+    const t0 = Date.now();
+    const timer = setInterval(()=>{
+      m1.textContent = pickSym();
+      m2.textContent = pickSym();
+      m3.textContent = pickSym();
+      if (Date.now()-t0>1000) clearInterval(timer);
+    }, 90);
+
+    await new Promise(r=>setTimeout(r,1000));
+    m1.classList.remove("spin"); m1.textContent = pickSym();
+    await new Promise(r=>setTimeout(r,220));
+    m2.classList.remove("spin"); m2.textContent = pickSym();
+    await new Promise(r=>setTimeout(r,220));
+    m3.classList.remove("spin"); m3.textContent = pickSym();
+
+    if (m1.textContent===m2.textContent && m2.textContent===m3.textContent){
+      hint.textContent = "Jackpot combo! Check full game in Slot page.";
+      toast("Mini Slot","JACKPOT preview 💥");
+    }else{
+      hint.textContent = "Nice spin! Try real demo in Slot page.";
+      toast("Mini Slot","Spin finished ✨");
+    }
+  }
+
+  // Auto ping on load
+  setTimeout(()=> ping(), 300);
 </script>
 </body>
 </html>
