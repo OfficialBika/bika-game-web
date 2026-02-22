@@ -2,21 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIKA Game Hub • Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>BIKA Game Hub</title>
   <meta name="theme-color" content="#070b17" />
+
+  <!-- Telegram Mini App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root{
       --bg0:#070b17; --bg1:#0b1020;
-      --card: rgba(17, 26, 51, .75);
+      --card: rgba(17, 26, 51, .78);
       --stroke: rgba(36,48,90,.9);
-      --stroke2: rgba(42,58,107,.85);
       --text:#eaf0ff; --muted:#9fb0ff;
       --good:#38f6b2; --bad:#ff5c7a; --warn:#ffd37a;
-      --shadow: 0 18px 50px rgba(0,0,0,.50);
-      --radius: 20px; --radius2: 14px;
+      --shadow: 0 18px 55px rgba(0,0,0,.55);
+      --r:22px; --r2:16px;
+      --blue:#6a86ff;
+      --green:#38f6b2;
     }
+
     *{ box-sizing:border-box; }
+    html{
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
     body{
       margin:0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, "Noto Sans";
@@ -27,36 +38,37 @@
         radial-gradient(1200px 800px at 55% 110%, rgba(255,92,122,.14), transparent 55%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       min-height: 100vh;
-      padding: 18px 14px 22px;
+      padding: 16px 14px 22px;
+      padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
       overflow-x:hidden;
     }
 
     .fx{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
-    .orb{ position:absolute; width:380px; height:380px; border-radius:999px; filter: blur(32px); opacity:.3; animation: floaty 10s ease-in-out infinite; }
-    .orb.one{ left:-120px; top:-120px; background: radial-gradient(circle, rgba(104,131,255,.9), transparent 60%); }
-    .orb.two{ right:-140px; top:160px; background: radial-gradient(circle, rgba(56,246,178,.85), transparent 60%); animation-duration: 12s; }
-    .orb.three{ left:10%; bottom:-220px; background: radial-gradient(circle, rgba(255,92,122,.85), transparent 60%); animation-duration: 14s; }
+    .orb{ position:absolute; width:380px; height:380px; border-radius:999px; filter: blur(32px); opacity:.28; animation: floaty 10s ease-in-out infinite; }
+    .orb.one{ left:-140px; top:-140px; background: radial-gradient(circle, rgba(104,131,255,.9), transparent 60%); }
+    .orb.two{ right:-150px; top:160px; background: radial-gradient(circle, rgba(56,246,178,.85), transparent 60%); animation-duration: 12s; }
+    .orb.three{ left:12%; bottom:-240px; background: radial-gradient(circle, rgba(255,92,122,.85), transparent 60%); animation-duration: 14s; }
     @keyframes floaty{ 0%,100%{ transform: translate(0,0) scale(1);} 50%{ transform: translate(18px, -14px) scale(1.05);} }
 
-    .wrap{ position:relative; z-index:1; max-width: 1020px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+    .wrap{ position:relative; z-index:1; max-width: 980px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
 
-    /* Top nav */
+    /* Top header: brand left, account right */
     .topbar{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      padding:14px 14px;
-      border-radius: 999px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 12px;
+      border-radius: 20px;
       background: linear-gradient(120deg, rgba(8,13,32,.95), rgba(21,35,78,.92));
-      border:1px solid rgba(90,110,200,.75);
+      border:1px solid rgba(90,110,200,.65);
       box-shadow: 0 16px 45px rgba(0,0,0,.6);
-      position:sticky; top:0; z-index:5;
       backdrop-filter: blur(18px);
     }
-    @media (max-width:640px){
-      .topbar{ border-radius:20px; flex-wrap:wrap; align-items:flex-start; }
-    }
-    .brand{ display:flex; gap:10px; align-items:center; }
+
+    .brand{ display:flex; gap:10px; align-items:center; min-width:0; }
     .logo{
-      width:40px; height:40px; border-radius:14px; position:relative; overflow:hidden;
+      width:42px; height:42px; border-radius:16px; position:relative; overflow:hidden; flex:0 0 auto;
       background:
         radial-gradient(circle at 30% 30%, rgba(56,246,178,.95), transparent 55%),
         radial-gradient(circle at 70% 70%, rgba(104,131,255,.95), transparent 55%),
@@ -71,89 +83,200 @@
     }
     @keyframes shine{ to{ transform: rotate(360deg);} }
 
-    .brand-title{ display:flex; flex-direction:column; }
-    .brand-title h1{ margin:0; font-size:17px; letter-spacing:.3px; }
-    .brand-title span{ font-size:11px; color:var(--muted); }
+    .brand-title{ display:flex; flex-direction:column; min-width:0; }
+    .brand-title h1{ margin:0; font-size:16px; letter-spacing:.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .brand-title span{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-    .nav{
-      display:flex; gap:6px; flex-wrap:wrap; margin-left:auto;
+    .acct{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex:0 0 auto;
+      padding:8px 10px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(8,13,32,.88);
+      box-shadow: 0 12px 30px rgba(0,0,0,.45);
+      max-width: 52%;
     }
-    .nav a{
-      font-size:12px; text-decoration:none; color:var(--muted);
-      padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(120,140,220,.5);
-      background: rgba(8,13,32,.9);
+    .acct .who{
+      display:flex;
+      flex-direction:column;
+      min-width:0;
     }
-    .nav a.active{
-      color:var(--text);
-      background: linear-gradient(120deg, rgba(104,131,255,.65), rgba(56,246,178,.55));
-      border-color: transparent;
-      font-weight:700;
+    .acct .who b{
+      font-size:12px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .acct .who span{
+      font-size:11px; color:var(--muted);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .acct .bal{
+      margin-left:auto;
+      text-align:right;
+      font-variant-numeric: tabular-nums;
+      white-space:nowrap;
+    }
+    .acct .bal b{ font-size:13px; }
+    .acct .bal small{ font-size:10px; color:var(--muted); font-weight:700; margin-right:6px; }
+
+    @media (max-width: 420px){
+      .topbar{ flex-wrap:wrap; }
+      .acct{ max-width: 100%; width:100%; }
     }
 
-    /* Hero / status row */
-    .heroRow{
-      display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1.3fr); gap:10px;
-      margin-top:6px;
-    }
-    @media (max-width:780px){
-      .heroRow{ grid-template-columns:1fr; }
-    }
-    .heroCard, .statusCard{
-      border-radius: var(--radius);
+    /* Main hero card */
+    .hero{
+      border-radius: var(--r);
       border:1px solid var(--stroke);
-      background: radial-gradient(120% 220% at 0% 0%, rgba(104,131,255,.32), transparent 55%) ,
-                  linear-gradient(180deg, rgba(11,17,40,.96), rgba(7,9,22,.95));
+      background:
+        radial-gradient(120% 220% at 0% 0%, rgba(104,131,255,.32), transparent 55%) ,
+        linear-gradient(180deg, rgba(11,17,40,.96), rgba(7,9,22,.95));
       padding:14px 14px 16px;
       box-shadow: var(--shadow);
-      position:relative;
       overflow:hidden;
     }
-    .heroCard h2{ margin:0 0 4px; font-size:17px; }
-    .heroCard p{ margin:0; font-size:13px; color:var(--muted); }
+    .hero h2{ margin:0 0 4px; font-size:16px; }
+    .hero p{ margin:0; font-size:12.5px; color:var(--muted); line-height:1.35; }
 
-    .heroTags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-    .tag{
-      font-size:11px; padding:5px 9px; border-radius:999px;
-      border:1px solid rgba(120,140,220,.55);
-      background: rgba(8,13,32,.95);
-      color:var(--muted);
-    }
-    .bigStatus{
+    .statusRow{
       margin-top:12px;
-      display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:space-between;
     }
-    .pingDot{
-      width:14px; height:14px; border-radius:999px;
-      background:radial-gradient(circle, var(--good), rgba(56,246,178,.1));
-      box-shadow:0 0 0 0 rgba(56,246,178,.5);
+    .ping{
+      display:flex; align-items:center; gap:10px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(8,13,32,.75);
+    }
+    .dot{
+      width:12px; height:12px; border-radius:999px;
+      background: radial-gradient(circle, var(--warn), rgba(255,211,122,.15));
+      box-shadow:0 0 0 0 rgba(255,211,122,.4);
       animation:pulse 1.5s ease-out infinite;
+      flex:0 0 auto;
     }
     @keyframes pulse{
-      0%{ box-shadow:0 0 0 0 rgba(56,246,178,.5); }
-      100%{ box-shadow:0 0 0 12px rgba(56,246,178,0); }
+      0%{ box-shadow:0 0 0 0 rgba(255,211,122,.4); }
+      100%{ box-shadow:0 0 0 12px rgba(255,211,122,0); }
     }
-    .statusText{ font-size:13px; }
-    .statusLabel{ font-size:11px; color:var(--muted); margin-top:4px; }
-
-    .statusCard .pillRow{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-    .pillMini{
-      padding:5px 9px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      font-size:11px; color:var(--muted);
-      background: rgba(8,13,32,.92);
+    .pingText{
+      display:flex; flex-direction:column;
     }
-    .pillMini strong{ color:var(--text); }
+    .pingText b{ font-size:12px; }
+    .pingText span{ font-size:11px; color:var(--muted); }
 
-    /* Generic card */
+    .btnRow{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+
+    button{
+      appearance:none;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.16);
+      padding:10px 12px;
+      background: linear-gradient(180deg, rgba(104,131,255,.38), rgba(9,14,34,.98));
+      color:var(--text);
+      font-weight:900;
+      font-size:13px;
+      letter-spacing:.2px;
+      cursor:pointer;
+      box-shadow:0 14px 40px rgba(0,0,0,.55);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      user-select:none;
+    }
+    button:active{ transform:translateY(0) scale(.98); box-shadow:0 8px 24px rgba(0,0,0,.6);}
+    button:hover{ transform:translateY(-1px); box-shadow:0 18px 48px rgba(0,0,0,.7); border-color:rgba(104,131,255,.8);}
+    button.secondary{ background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(9,14,34,.98)); }
+    button.good{ background: linear-gradient(180deg, rgba(56,246,178,.30), rgba(9,14,34,.98)); border-color: rgba(56,246,178,.35); }
+
+    /* Game cards area */
+    .games{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    @media (max-width: 740px){
+      .games{ grid-template-columns: 1fr; }
+    }
+
+    .gameCard{
+      border-radius: var(--r);
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(17,26,51,.92), rgba(8,11,26,.96));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .gameArt{
+      height: 170px;
+      position:relative;
+      background:
+        radial-gradient(900px 380px at 25% 30%, rgba(104,131,255,.28), transparent 60%),
+        radial-gradient(700px 320px at 85% 60%, rgba(56,246,178,.18), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,0));
+    }
+
+    /* “photo-like” illustration without external images (works on GitHub pages) */
+    .gameArt::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(circle at 18% 65%, rgba(255,255,255,.10), transparent 40%),
+        radial-gradient(circle at 55% 40%, rgba(255,255,255,.08), transparent 45%),
+        radial-gradient(circle at 82% 70%, rgba(255,255,255,.08), transparent 45%);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .badge{
+      position:absolute;
+      left:12px; top:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(5,7,18,.78);
+      backdrop-filter: blur(12px);
+      font-size:12px;
+      font-weight:1000;
+      display:flex; gap:8px; align-items:center;
+    }
+
+    .gameBody{
+      padding:12px 12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .gameTitle{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+    }
+    .gameTitle h3{ margin:0; font-size:15px; }
+    .gameTitle span{ font-size:11px; color:var(--muted); }
+
+    .gameActions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .gameActions button{ flex: 1 1 160px; min-width: 140px; }
+
+    /* Leaderboard */
     .card{
-      margin-top:10px;
-      border-radius: var(--radius);
+      border-radius: var(--r);
       border:1px solid var(--stroke);
       background: linear-gradient(180deg, rgba(17,26,51,.92), rgba(8,11,26,.96));
       box-shadow: var(--shadow);
       padding:14px 14px 16px;
-      position:relative;
       overflow:hidden;
     }
     .cardTitle{
@@ -163,75 +286,6 @@
     .cardTitle h3{ margin:0; font-size:15px; }
     .cardTitle span{ font-size:11px; color:var(--muted); }
 
-    .row{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
-    .row > *{ flex:1; min-width:160px; }
-
-    input{
-      width:100%;
-      padding:11px 11px;
-      border-radius: 15px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(10,17,38,.8);
-      color:var(--text);
-      outline:none;
-      font-size:13px;
-    }
-    input::placeholder{ color:rgba(159,176,255,.6);}
-    input:focus{
-      border-color: rgba(104,131,255,.8);
-      box-shadow:0 0 0 3px rgba(104,131,255,.35);
-    }
-
-    button{
-      appearance:none;
-      border-radius: 15px;
-      border:1px solid rgba(255,255,255,.16);
-      padding:10px 12px;
-      background: linear-gradient(180deg, rgba(104,131,255,.4), rgba(9,14,34,.98));
-      color:var(--text);
-      font-weight:800;
-      font-size:13px;
-      letter-spacing:.2px;
-      cursor:pointer;
-      box-shadow:0 14px 40px rgba(0,0,0,.55);
-      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-    }
-    button:active{ transform:translateY(0) scale(.98); box-shadow:0 8px 24px rgba(0,0,0,.6);}
-    button:hover{ transform:translateY(-1px); box-shadow:0 18px 48px rgba(0,0,0,.7); border-color:rgba(104,131,255,.8);}
-    button.secondary{
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(9,14,34,.98));
-    }
-    button.good{
-      background: linear-gradient(180deg, rgba(56,246,178,.4), rgba(9,14,34,.98));
-    }
-
-    /* Balance display */
-    .balBox{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius: var(--radius2);
-      border:1px solid rgba(255,255,255,.12);
-      background: radial-gradient(180% 220% at 0% 0%, rgba(104,131,255,.25), transparent 60%),
-                  rgba(7,11,28,.98);
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      font-size:13px;
-    }
-    .balTop{
-      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
-    }
-    .balName b{ font-size:14px; }
-    .balName span{ display:block; font-size:11px; color:var(--muted); }
-    .balValue{
-      font-size:18px; font-weight:900;
-    }
-    .balValue small{
-      font-size:11px; color:var(--muted); font-weight:600;
-    }
-    .balMeta{ font-size:11px; color:var(--muted); display:flex; justify-content:space-between; gap:6px; flex-wrap:wrap; margin-top:4px;}
-
-    /* Leaderboard */
     .lb{ margin-top:8px; display:grid; gap:8px; }
     .lbItem{
       border-radius: 16px;
@@ -245,22 +299,18 @@
       animation:enter .45s ease forwards;
     }
     @keyframes enter{ to{ transform:translateY(0); opacity:1;} }
-
-    .lbItem.top1{ border-color:rgba(255,211,122,.7); box-shadow: 0 18px 45px rgba(255,211,122,.2), 0 16px 48px rgba(0,0,0,.6);}
-    .lbItem.top2{ border-color:rgba(159,176,255,.7);}
-    .lbItem.top3{ border-color:rgba(56,246,178,.7);}
-
     .lbLeft{ display:flex; align-items:center; gap:8px; min-width:0; }
     .rank{
       width:38px; height:38px; border-radius:14px; border:1px solid rgba(255,255,255,.14);
       display:grid; place-items:center;
       background: rgba(6,10,26,.98);
       font-size:17px; font-weight:900;
+      flex:0 0 auto;
     }
     .lbName{ display:flex; flex-direction:column; min-width:0; }
-    .lbName b{ font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52vw;}
+    .lbName b{ font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:56vw;}
     .lbName span{ font-size:11px; color:var(--muted); }
-    .lbBal{ font-size:13px; font-weight:900; text-align:right; flex:0 0 auto; }
+    .lbBal{ font-size:13px; font-weight:1000; text-align:right; flex:0 0 auto; font-variant-numeric:tabular-nums; }
     .lbBal span{ display:inline-block; margin-left:6px; padding:3px 7px; border-radius:999px; border:1px solid rgba(255,255,255,.16); font-size:10px;}
 
     .tagBronze{ color:#ffd37a;}
@@ -268,27 +318,6 @@
     .tagGold{ color:#ffe37a;}
     .tagDiamond{ color:#9ff6ff;}
     .tagLegend{ color:#38f6b2;}
-
-    /* Slot preview mini – keep simple */
-    .slotMiniWrap{ margin-top:8px; display:grid; gap:8px; }
-    .slotMiniTop{ display:flex; justify-content:space-between; gap:8px; align-items:center; }
-    .slotTag{ font-size:11px; color:var(--muted); }
-    .slotReels{
-      display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
-    }
-    .miniReel{
-      height:64px; border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,.08), transparent 60%), rgba(8,12,30,.98);
-      display:grid; place-items:center; font-size:30px;
-    }
-    .miniReel.spin{ animation:reelSpin .5s ease-in-out infinite;}
-    @keyframes reelSpin{
-      0%{ transform:translateY(0); filter:blur(0);}
-      50%{ transform:translateY(-3px); filter:blur(.4px);}
-      100%{ transform:translateY(0); filter:blur(0);}
-    }
-    .slotHint{ font-size:11px; color:var(--muted); margin-top:2px;}
 
     /* Toast */
     .toast{
@@ -300,176 +329,184 @@
       box-shadow:0 18px 55px rgba(0,0,0,.8);
       backdrop-filter:blur(16px);
       font-size:12px;
-      font-weight:800;
+      font-weight:1000;
       display:none;
       z-index:10;
+      max-width: 92vw;
     }
     .toast.show{ display:block; animation:pop .18s ease-out;}
     @keyframes pop{
       from{ transform:translateX(-50%) translateY(8px); opacity:.2;}
       to{ transform:translateX(-50%) translateY(0); opacity:1;}
     }
-    .toast small{ display:block; margin-top:2px; color:var(--muted); font-weight:600;}
+    .toast small{ display:block; margin-top:2px; color:var(--muted); font-weight:700;}
 
     footer{
-      margin-top:14px; text-align:center; font-size:11px; color:rgba(159,176,255,.78);
+      margin-top:12px; text-align:center; font-size:11px; color:rgba(159,176,255,.78);
     }
   </style>
 </head>
+
 <body>
-<div class="fx">
-  <div class="orb one"></div>
-  <div class="orb two"></div>
-  <div class="orb three"></div>
-</div>
+  <div class="fx">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+  </div>
 
-<div class="wrap">
-  <!-- Top nav -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo"></div>
-      <div class="brand-title">
-        <h1>BIKA Game Hub</h1>
-        <span>Telegram Store · Game Wallet · Live Stats</span>
-      </div>
-    </div>
-    <nav class="nav">
-      <a href="index.html" class="active">Dashboard</a>
-      <a href="slot.html">Slot Game</a>
-      <a href="rocket.html">Rocket</a>
-    </nav>
-  </header>
-
-  <!-- Hero / ping -->
-  <section class="heroRow">
-    <div class="heroCard">
-      <h2>Welcome, Commander 🎮</h2>
-      <p>Check wallet balance, view top players and preview game animations — all optimized for mobile.</p>
-
-      <div class="heroTags">
-        <span class="tag">MLBB · PUBG · Telegram Premium</span>
-        <span class="tag">Wallet: MMK</span>
-        <span class="tag">BIKA Store Bot Connected</span>
+  <div class="wrap">
+    <!-- TOP -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="brand-title">
+          <h1>BIKA Game Hub</h1>
+          <span>Telegram Mini App · Wallet MMK · Live Games</span>
+        </div>
       </div>
 
-      <div class="bigStatus">
-        <div class="pingDot" id="pingDot"></div>
+      <div class="acct" title="Telegram account + balance">
+        <div class="who">
+          <b id="accName">Loading…</b>
+          <span id="accId">ID: —</span>
+        </div>
+        <div class="bal">
+          <small>MMK</small><b id="accBal">—</b>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <h2 id="welcomeTitle">Welcome 🎮</h2>
+      <p>Choose a game below. Your Telegram account is detected automatically.</p>
+
+      <div class="statusRow">
+        <div class="ping">
+          <div class="dot" id="pingDot"></div>
+          <div class="pingText">
+            <b id="pingStatus">Checking API status…</b>
+            <span id="pingTime">Last ping: —</span>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button class="good" id="btnRefresh">Refresh</button>
+          <button class="secondary" id="btnTop10">Load Top10</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAMES (center cards with "photo" + button under it) -->
+    <section class="games">
+      <!-- SLOT -->
+      <article class="gameCard">
+        <div class="gameArt" style="
+          background:
+            radial-gradient(950px 420px at 22% 35%, rgba(255,211,122,.22), transparent 55%),
+            radial-gradient(850px 360px at 84% 60%, rgba(104,131,255,.22), transparent 58%),
+            linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,0));
+        ">
+          <div class="badge">🎰 <span>BIKA SLOT</span></div>
+        </div>
+        <div class="gameBody">
+          <div class="gameTitle">
+            <h3>Slot Game</h3>
+            <span>Spin · Win · MMK</span>
+          </div>
+          <div class="gameActions">
+            <button class="good" onclick="go('slot.html')">Open Slot</button>
+            <button class="secondary" onclick="toast('Tip','Slot uses your Telegram ID automatically.')">How it works</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- ROCKET -->
+      <article class="gameCard">
+        <div class="gameArt" style="
+          background:
+            radial-gradient(900px 420px at 18% 60%, rgba(56,246,178,.20), transparent 60%),
+            radial-gradient(900px 380px at 85% 35%, rgba(104,131,255,.28), transparent 55%),
+            linear-gradient(180deg, rgba(255,255,255,.07), rgba(0,0,0,0));
+        ">
+          <div class="badge">🚀 <span>BIKA ROCKET</span></div>
+        </div>
+        <div class="gameBody">
+          <div class="gameTitle">
+            <h3>Rocket Game</h3>
+            <span>Bet · Cashout</span>
+          </div>
+          <div class="gameActions">
+            <button class="good" onclick="go('rocket.html')">Open Rocket</button>
+            <button class="secondary" onclick="toast('Tip','Place bet during BETTING phase, cashout anytime.')">Tips</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- TOP 10 -->
+    <section class="card">
+      <div class="cardTitle">
         <div>
-          <div class="statusText" id="pingStatus">Checking API status…</div>
-          <div class="statusLabel" id="pingTime">Last ping: —</div>
+          <h3>Top 10 Players</h3>
+          <span>Leaderboard from Worker</span>
         </div>
+        <button class="good" onclick="top10()">Reload</button>
       </div>
-    </div>
 
-    <aside class="statusCard">
-      <div class="pillRow">
-        <div class="pillMini">Origin: <strong id="originText">—</strong></div>
-      </div>
-      <div style="margin-top:16px;">
-        <div class="statusLabel">Quick actions</div>
-        <div class="row" style="margin-top:8px;">
-          <button class="good" onclick="ping()">Refresh Ping</button>
-          <button class="secondary" onclick="fillMyId()">Use my Telegram ID</button>
-        </div>
-      </div>
-    </aside>
-  </section>
+      <div id="lb" class="lb"></div>
+      <div id="lbEmpty" style="font-size:12px;color:var(--muted);margin-top:6px;">Tap “Load Top10” to view leaderboard.</div>
+    </section>
 
-  <!-- Balance card -->
-  <section class="card">
-    <div class="cardTitle">
-      <div>
-        <h3>Wallet Balance</h3>
-        <span>Enter Telegram userId to preview wallet.</span>
-      </div>
-      <button class="secondary" onclick="fillMyId()">My ID</button>
-    </div>
+    <footer>
+      BIKA Game Hub • GitHub Pages + Cloudflare Worker • Telegram: @Official_Bika
+    </footer>
+  </div>
 
-    <div class="row">
-      <input id="userId" placeholder="Telegram userId (e.g. 8251006975)" />
-      <button onclick="getBalance()">Get Balance</button>
-    </div>
-
-    <div class="balBox" id="balBox">
-      <div class="balTop">
-        <div class="balName">
-          <b id="balName">No user loaded</b>
-          <span id="balId">ID: —</span>
-        </div>
-        <div class="balValue" id="balBig">0 MMK</div>
-      </div>
-      <div class="balMeta">
-        <span id="balUpdated">Updated: —</span>
-        <span id="balStatus">Status: Waiting for request…</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Top players -->
-  <section class="card">
-    <div class="cardTitle">
-      <div>
-        <h3>Top 10 Players</h3>
-        <span>Leaderboard from BIKA Store Bot</span>
-      </div>
-      <button class="good" onclick="top10()">Load Top10</button>
-    </div>
-    <div id="lb" class="lb"></div>
-    <div id="lbEmpty" style="font-size:12px;color:var(--muted);margin-top:6px;">Tap “Load Top10” to view leaderboard.</div>
-  </section>
-
-  <!-- Mini slot promo -->
-  <section class="card">
-    <div class="cardTitle">
-      <div>
-        <h3>🎰 BIKA Mini Slot Preview</h3>
-        <span>UI animation only — full game in Slot page</span>
-      </div>
-      <a href="slot.html" style="text-decoration:none;">
-        <button class="secondary">Go to Slot</button>
-      </a>
-    </div>
-
-    <div class="slotMiniWrap">
-      <div class="slotMiniTop">
-        <div>
-          <div class="slotTag">Single spin preview</div>
-          <div class="slotHint" id="slotMiniHint">Tap Spin to feel the animation.</div>
-        </div>
-        <button class="good" onclick="slotMiniSpin()">Spin</button>
-      </div>
-      <div class="slotReels">
-        <div class="miniReel" id="m1">⭐</div>
-        <div class="miniReel" id="m2">🍒</div>
-        <div class="miniReel" id="m3">🔔</div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    BIKA Game Hub • GitHub Pages + Cloudflare Worker • Telegram: @Official_Bika
-  </footer>
-</div>
-
-<div id="toast" class="toast"></div>
+  <div id="toast" class="toast"></div>
 
 <script>
-  // ==== CONFIG ====
-  const API = "https://bika-web-proxy.dabllu2022.workers.dev"; // Cloudflare Worker
-  const API_KEY = "BikaWeb2026_268726"; // not sent from browser (Worker holds real secret)
-  document.getElementById("originText").textContent = "GitHub Pages";
+  // ===== CONFIG =====
+  const API = "https://bika-web-proxy.dabllu2022.workers.dev";
 
-  // ==== Helpers ====
+  // ===== Telegram Mini App Auto ID =====
+  const TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+
+  let USER_ID = null;
+  let TG_USER = null;
+
+  function initTelegram(){
+    try{
+      if (!TG) return false;
+      TG.ready();
+      TG.expand();
+      TG_USER = TG.initDataUnsafe?.user || null;
+      if (TG_USER?.id){
+        USER_ID = String(TG_USER.id);
+        localStorage.setItem("bika_userId", USER_ID);
+        return true;
+      }
+      return false;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function fallbackUser(){
+    USER_ID = localStorage.getItem("bika_userId") || "8251006975";
+    localStorage.setItem("bika_userId", USER_ID);
+  }
+
+  const okTG = initTelegram();
+  if (!okTG) fallbackUser();
+
+  // ===== Helpers =====
   function toast(title, msg){
     const t = document.getElementById("toast");
     t.innerHTML = title + (msg ? "<small>"+msg+"</small>" : "");
     t.classList.add("show");
     clearTimeout(window.__toastT);
     window.__toastT = setTimeout(()=> t.classList.remove("show"), 2200);
-  }
-  function fillMyId(){
-    document.getElementById("userId").value = "8251006975";
-    toast("ID filled","Sample Telegram userId inserted");
   }
   function fmt(n){
     const x = Number(n || 0);
@@ -481,24 +518,8 @@
       "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
     }[m]));
   }
-
-  // Count-up animation
-  function animateNumber(el, from, to, ms=850){
-    if (!el) return;
-    const start = performance.now();
-    const diff = to - from;
-    function tick(t){
-      const p = Math.min(1, (t - start) / ms);
-      const eased = 1 - Math.pow(1 - p, 3);
-      const v = Math.floor(from + diff * eased);
-      el.textContent = fmt(v) + " MMK";
-      if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
-
   async function apiFetch(url){
-    const r = await fetch(url);
+    const r = await fetch(url, { cache:"no-store" });
     let data = null;
     try{ data = await r.json(); }catch(e){ data = { ok:false, error:"Invalid JSON", status:r.status }; }
     if (!r.ok){
@@ -506,8 +527,32 @@
     }
     return data;
   }
+  function go(path){
+    // keep inside Telegram; normal browser also works
+    window.location.href = path;
+  }
 
-  // ==== Ping ====
+  // ===== UI: show user =====
+  function setUserHeader(profile){
+    const nameEl = document.getElementById("accName");
+    const idEl = document.getElementById("accId");
+    const balEl = document.getElementById("accBal");
+    const welcome = document.getElementById("welcomeTitle");
+
+    const tgName = (TG_USER?.username ? "@"+TG_USER.username : (TG_USER?.first_name || "Telegram user"));
+    nameEl.textContent = tgName;
+    idEl.textContent = "ID: " + (USER_ID || "—");
+    if (TG_USER?.first_name) welcome.textContent = "Welcome, " + TG_USER.first_name + " 🎮";
+
+    if (profile?.ok){
+      const b = Number(profile.balance || 0);
+      balEl.textContent = fmt(b);
+    } else {
+      balEl.textContent = "—";
+    }
+  }
+
+  // ===== Ping =====
   async function ping(){
     const dot = document.getElementById("pingDot");
     const statusEl = document.getElementById("pingStatus");
@@ -522,78 +567,33 @@
         dot.style.background = "radial-gradient(circle, var(--good), rgba(56,246,178,.2))";
         statusEl.textContent = "API Online · pong";
         timeEl.textContent = "Last ping: " + (data.time || new Date().toISOString());
-        toast("Ping OK","Server responded");
       }else{
         dot.style.background = "radial-gradient(circle, var(--bad), rgba(255,92,122,.2))";
         statusEl.textContent = "API Error";
         timeEl.textContent = data.error || "Unknown error";
-        toast("Ping Error", data.error || "");
       }
     }catch(e){
       dot.style.background = "radial-gradient(circle, var(--bad), rgba(255,92,122,.2))";
       statusEl.textContent = "Network error";
       timeEl.textContent = e.message;
-      toast("Ping Error", e.message);
     }
   }
 
-  // ==== Balance ====
-  async function getBalance(){
-    const userId = document.getElementById("userId").value.trim();
-    const nameEl = document.getElementById("balName");
-    const idEl = document.getElementById("balId");
-    const bigEl = document.getElementById("balBig");
-    const upEl = document.getElementById("balUpdated");
-    const stEl = document.getElementById("balStatus");
-
-    if (!userId){
-      toast("Missing","userId ထည့်ပါ");
-      stEl.textContent = "Status: userId is required.";
-      return;
-    }
-    if (!/^\d+$/.test(userId)){
-      toast("Invalid","userId က နံပါတ်ပဲဖြစ်ရမယ်");
-      stEl.textContent = "Status: userId must be numbers only.";
-      return;
-    }
-
-    stEl.textContent = "Status: Loading…";
-    nameEl.textContent = "Loading…";
-    idEl.textContent = "ID: " + userId;
-    bigEl.textContent = "0 MMK";
-
+  // ===== Balance (auto) =====
+  async function loadMyBalance(){
     try{
-      const data = await apiFetch(`${API}/balance?userId=${encodeURIComponent(userId)}`);
-      if (!data.ok){
-        toast("Balance Error", data.error || "");
-        nameEl.textContent = "No user loaded";
-        bigEl.textContent = "0 MMK";
-        stEl.textContent = "Status: " + (data.error || "Failed to fetch.");
-        return;
+      const data = await apiFetch(`${API}/balance?userId=${encodeURIComponent(USER_ID)}`);
+      setUserHeader(data);
+      if (!data?.ok){
+        toast("Balance Error", data?.error || "Failed to load");
       }
-
-      // API may return balance at root or inside data
-      const uName = data.username || data.data?.username || "Unknown";
-      const fName = data.firstName || data.data?.firstName || "";
-      const rawBal = (data.balance ?? data.data?.balance ?? 0);
-      const bal = Number(rawBal || 0);
-      const updated = data.updatedAt || data.data?.updatedAt || null;
-
-      nameEl.textContent = fName ? `${fName} (@${uName})` : `@${uName}`;
-      idEl.textContent = "ID: " + (data.userId || data.data?.userId || userId);
-      animateNumber(bigEl, 0, bal, 900);
-      upEl.textContent = "Updated: " + (updated ? new Date(updated).toLocaleString() : "—");
-      stEl.textContent = "Status: Balance loaded";
-      toast("Balance OK", `Balance: ${fmt(bal)} MMK`);
     }catch(e){
-      toast("Error", e.message);
-      stEl.textContent = "Status: " + e.message;
-      nameEl.textContent = "No user loaded";
-      bigEl.textContent = "0 MMK";
+      setUserHeader(null);
+      toast("Balance Error", e.message);
     }
   }
 
-  // ==== Leaderboard ====
+  // ===== Leaderboard =====
   function tierTag(balance){
     const b = Number(balance||0);
     if (b <= 500) return { text:"Bronze", cls:"tagBronze" };
@@ -623,26 +623,19 @@
         return;
       }
 
-      const list =
-        Array.isArray(data.top10) ? data.top10 :
-        Array.isArray(data.data?.top10) ? data.data.top10 :
-        Array.isArray(data.data) ? data.data :
-        [];
-
+      const list = Array.isArray(data.top10) ? data.top10 : [];
       if (!list.length){
         empty.textContent = "No data.";
-        toast("Top10","No players found");
         return;
       }
 
-      const html = list.map((u,i)=>{
+      lb.innerHTML = list.map((u,i)=>{
         const name = u.username ? "@"+u.username : (u.firstName || ("ID " + u.userId));
         const sub = (u.firstName && u.username) ? u.firstName : (u.firstName || "Player");
         const tag = tierTag(u.balance);
-        const topCls = i===0 ? "top1" : i===1 ? "top2" : i===2 ? "top3" : "";
         const delay = i * 70;
         return `
-          <div class="lbItem ${topCls}" style="animation-delay:${delay}ms">
+          <div class="lbItem" style="animation-delay:${delay}ms">
             <div class="lbLeft">
               <div class="rank">${esc(rankLabel(i))}</div>
               <div class="lbName">
@@ -657,7 +650,7 @@
           </div>
         `;
       }).join("");
-      lb.innerHTML = html;
+
       empty.textContent = "";
       toast("Top10 Loaded","Leaderboard updated");
     }catch(e){
@@ -666,45 +659,24 @@
     }
   }
 
-  // ==== Mini slot preview ====
-  const SYMS = ["🍒","🍋","🍉","🔔","⭐","7️⃣","💎"];
-  function pickSym(){ return SYMS[Math.floor(Math.random()*SYMS.length)]; }
+  // ===== Buttons =====
+  document.getElementById("btnRefresh").addEventListener("pointerup", async (e)=>{
+    e.preventDefault();
+    await ping();
+    await loadMyBalance();
+    toast("Refreshed","Ping + Balance updated");
+  }, { passive:false });
 
-  async function slotMiniSpin(){
-    const m1 = document.getElementById("m1");
-    const m2 = document.getElementById("m2");
-    const m3 = document.getElementById("m3");
-    const hint = document.getElementById("slotMiniHint");
+  document.getElementById("btnTop10").addEventListener("pointerup", async (e)=>{
+    e.preventDefault();
+    await top10();
+  }, { passive:false });
 
-    [m1,m2,m3].forEach(m => m.classList.add("spin"));
-    hint.textContent = "Spinning…";
-
-    const t0 = Date.now();
-    const timer = setInterval(()=>{
-      m1.textContent = pickSym();
-      m2.textContent = pickSym();
-      m3.textContent = pickSym();
-      if (Date.now()-t0>1000) clearInterval(timer);
-    }, 90);
-
-    await new Promise(r=>setTimeout(r,1000));
-    m1.classList.remove("spin"); m1.textContent = pickSym();
-    await new Promise(r=>setTimeout(r,220));
-    m2.classList.remove("spin"); m2.textContent = pickSym();
-    await new Promise(r=>setTimeout(r,220));
-    m3.classList.remove("spin"); m3.textContent = pickSym();
-
-    if (m1.textContent===m2.textContent && m2.textContent===m3.textContent){
-      hint.textContent = "Jackpot combo! Check full game in Slot page.";
-      toast("Mini Slot","JACKPOT preview 💥");
-    }else{
-      hint.textContent = "Nice spin! Try real demo in Slot page.";
-      toast("Mini Slot","Spin finished ✨");
-    }
-  }
-
-  // Auto ping on load
-  setTimeout(()=> ping(), 300);
+  // ===== On load =====
+  setTimeout(async ()=>{
+    await ping();
+    await loadMyBalance();
+  }, 250);
 </script>
 </body>
-</html>
+  </html>
