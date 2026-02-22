@@ -1,1090 +1,483 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
   <title>BIKA ROCKET</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f1d"/>
   <style>
-    :root {
-      --bg: #050712;
-      --card: #0b1020;
-      --card-alt: #0f1525;
-      --accent: #3b82f6;
-      --accent-soft: rgba(59, 130, 246, 0.3);
-      --accent2: #8b5cf6;
-      --danger: #f97373;
-      --success: #4ade80;
-      --text-main: #e5e7eb;
-      --text-soft: #9ca3af;
-      --border-subtle: rgba(148, 163, 184, 0.24);
-      --radius-lg: 18px;
-      --radius-pill: 999px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.8);
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Inter", sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
-      color: var(--text-main);
-    }
-
-    .app {
-      min-height: 100vh;
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 12px 12px 82px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* Top bar */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 8px 10px;
-    }
-
-    .icon-btn {
-      border: none;
-      outline: none;
-      background: rgba(15, 23, 42, 0.75);
-      color: #e5e7eb;
-      border-radius: 999px;
-      width: 34px;
-      height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.7);
-    }
-
-    .title-pill {
-      flex: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #4c1d95, #7c3aed);
-      color: #f9fafb;
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.7);
-    }
-
-    .title-pill span.emoji {
-      font-size: 18px;
-    }
-
-    .balance-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      font-size: 12px;
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.8);
-    }
-
-    .balance-pill-label {
-      color: var(--text-soft);
-      font-size: 11px;
-    }
-
-    .balance-pill-amount {
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    main {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .card {
-      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
-      border-radius: var(--radius-lg);
-      padding: 14px 14px 16px;
-      border: 1px solid rgba(31, 41, 55, 0.9);
-      box-shadow: var(--shadow-soft);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.04), transparent 60%),
-        radial-gradient(circle at 100% 0%, rgba(129, 140, 248, 0.08), transparent 65%),
-        radial-gradient(circle at 40% 120%, rgba(236, 72, 153, 0.05), transparent 60%);
-      opacity: 0.9;
-      z-index: -1;
-    }
-
-    /* Rocket panel */
-    .rocket-panel {
-      padding-top: 12px;
-    }
-
-    .phase-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 10px;
-    }
-
-    .phase-badge {
-      padding: 2px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-    }
-
-    .phase-badge.live {
-      border-color: rgba(52, 211, 153, 0.9);
-      background: radial-gradient(circle at top, rgba(34, 197, 94, 0.12), rgba(15, 23, 42, 0.95));
-      color: #bbf7d0;
-    }
-
-    /* Countdown + rocket */
-    .rocket-layout {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .countdown-circle {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 0%, #1f2937, #020617);
-      border: 3px solid rgba(148, 163, 184, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.95);
-    }
-
-    .countdown-circle::after {
-      content: "";
-      position: absolute;
-      inset: 10px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      border-top-color: #f97316;
-      border-right-color: #f97316;
-      opacity: 0.0;
-      transform: rotate(-120deg);
-      transition: opacity 0.2s ease-out, transform 0.2s linear;
-    }
-
-    .countdown-inner {
-      text-align: center;
-    }
-
-    .countdown-number {
-      font-size: 40px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    .countdown-label {
-      font-size: 11px;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-
-    .countdown-multiplier {
-      font-size: 34px;
-      font-weight: 800;
-      color: #a855f7;
-      text-shadow: 0 0 18px rgba(168, 85, 247, 0.9);
-    }
-
-    /* Rocket track */
-    .rocket-track {
-      margin-top: 10px;
-      width: 100%;
-      height: 120px;
-      position: relative;
-      border-radius: 999px;
-      background: radial-gradient(circle at bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95));
-      border: 1px solid rgba(55, 65, 81, 0.8);
-      overflow: hidden;
-    }
-
-    .rocket-trail {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      top: 50%;
-      height: 4px;
-      margin-top: -2px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(96, 165, 250, 0.2), rgba(129, 140, 248, 0.8));
-      box-shadow: 0 0 14px rgba(96, 165, 250, 0.6);
-      opacity: 0.7;
-    }
-
-    .rocket-dot {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: #ffffff;
-      box-shadow: 0 0 18px rgba(248, 250, 252, 0.95);
-      top: 50%;
-      margin-top: -7px;
-      left: 16px;
-      transform: translateX(0);
-      transition: transform 0.08s linear;
-    }
-
-    .rocket-ship {
-      position: absolute;
-      width: 56px;
-      height: 56px;
-      border-radius: 20px;
-      background: radial-gradient(circle at top, #22c55e, #16a34a);
-      bottom: 12px;
-      left: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow:
-        0 0 28px rgba(34, 197, 94, 0.9),
-        0 16px 35px rgba(15, 23, 42, 0.95);
-      transform: translateX(0) translateY(0);
-      transition: transform 0.08s linear;
-    }
-
-    .rocket-ship-icon {
-      font-size: 30px;
-    }
-
-    .rocket-burst {
-      position: absolute;
-      bottom: 6px;
-      left: 0;
-      right: 0;
-      height: 80px;
-      background: radial-gradient(circle at bottom, rgba(59, 130, 246, 0.08), transparent 70%);
-      opacity: 0.0;
-      transition: opacity 0.18s ease-out;
-    }
-
-    .rocket-burst.active {
-      opacity: 1;
-    }
-
-    .chips-row {
-      width: 100%;
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 8px;
-      padding-bottom: 4px;
-    }
-
-    .chip {
-      flex: 0 0 auto;
-      min-width: 58px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      font-size: 11px;
-      text-align: center;
-      color: var(--text-soft);
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .chip.hot {
-      border-color: rgba(96, 165, 250, 0.95);
-      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.3), rgba(15, 23, 42, 0.96));
-      color: #dbeafe;
-      box-shadow: 0 0 18px rgba(59, 130, 246, 0.8);
-    }
-
-    .chip-win {
-      border-color: rgba(52, 211, 153, 0.9);
-      color: #bbf7d0;
-    }
-
-    /* Bet card */
-    .bet-card {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .bet-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-    }
-
-    .bet-header span.sub {
-      color: var(--text-soft);
-      font-size: 11px;
-    }
-
-    .bet-input-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .bet-input-group {
-      flex: 1;
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      padding: 2px;
-    }
-
-    .bet-input-group button {
-      border: none;
-      outline: none;
-      background: transparent;
-      color: var(--text-soft);
-      width: 32px;
-      height: 32px;
-      font-size: 18px;
-      border-radius: 999px;
-    }
-
-    .bet-input-group button:active {
-      background: rgba(31, 41, 55, 0.9);
-    }
-
-    .bet-input {
-      flex: 1;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: #e5e7eb;
-      text-align: center;
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    .bet-input::placeholder {
-      color: rgba(148, 163, 184, 0.6);
-    }
-
-    .quick-bets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .quick-bet-btn {
-      flex: 1;
-      min-width: 56px;
-      border-radius: 999px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      background: rgba(15, 23, 42, 0.92);
-      color: var(--text-soft);
-      font-size: 11px;
-      padding: 4px 0;
-    }
-
-    .quick-bet-btn:active {
-      background: rgba(31, 41, 55, 0.95);
-    }
-
-    .primary-btn {
-      margin-top: 4px;
-      width: 100%;
-      border-radius: 999px;
-      border: none;
-      outline: none;
-      padding: 11px 0;
-      font-size: 15px;
-      font-weight: 600;
-      color: #f9fafb;
-      background: linear-gradient(90deg, #2563eb, #7c3aed);
-      box-shadow:
-        0 12px 32px rgba(37, 99, 235, 0.85),
-        0 0 18px rgba(129, 140, 248, 0.7);
-    }
-
-    .primary-btn[disabled] {
-      opacity: 0.55;
-      box-shadow: none;
-    }
-
-    .hint-text {
-      margin-top: 4px;
-      font-size: 11px;
-      color: var(--text-soft);
-    }
-
-    .hint-text strong {
-      color: #e5e7eb;
-    }
-
-    /* History list */
-    .history-card {
-      padding-top: 12px;
-    }
-
-    .history-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 13px;
-    }
-
-    .history-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .history-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 10px;
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.92);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-    }
-
-    .history-main {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      font-size: 12px;
-    }
-
-    .history-main span.label {
-      color: var(--text-soft);
-      font-size: 11px;
-    }
-
-    .history-tags {
-      display: inline-flex;
-      gap: 6px;
-      font-size: 11px;
-    }
-
-    .tag {
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      color: var(--text-soft);
-    }
-
-    .tag.win {
-      border-color: rgba(52, 211, 153, 0.95);
-      color: #bbf7d0;
-    }
-
-    .tag.lose {
-      border-color: rgba(248, 113, 113, 0.95);
-      color: #fecaca;
-    }
-
-    .history-amount {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .history-amount.win {
-      color: var(--success);
-    }
-
-    .history-amount.lose {
-      color: var(--danger);
-    }
-
-    /* Bottom nav (simple placeholder) */
-    .bottom-nav {
-      position: fixed;
-      inset-inline: 0;
-      bottom: 0;
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 6px 12px 10px;
-    }
-
-    .bottom-nav-inner {
-      background: rgba(15, 23, 42, 0.98);
-      border-radius: 999px;
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      display: flex;
-      justify-content: space-around;
-      padding: 6px 4px;
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .nav-item {
-      flex: 1;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1px;
-    }
-
-    .nav-item span.icon {
-      font-size: 16px;
-    }
-
-    .nav-item.active {
-      color: #e5e7eb;
-    }
-
-    @media (min-width: 480px) {
-      .app {
-        padding-top: 18px;
-      }
-    }
+    :root{
+      --bg:#0b0f1d;
+      --card: rgba(20,26,44,.70);
+      --stroke: rgba(255,255,255,.10);
+      --muted: rgba(220,230,255,.70);
+      --txt: rgba(240,245,255,.96);
+      --blue:#1e90ff;
+      --green:#30e59f;
+      --red:#ff4b6e;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1100px 700px at 50% 20%, rgba(80,120,255,.14), transparent 60%),
+                  radial-gradient(900px 600px at 70% 80%, rgba(60,240,160,.10), transparent 60%),
+                  linear-gradient(180deg, #070a14, var(--bg));
+      color:var(--txt);
+      min-height:100vh;
+      padding:14px;
+      overflow-x:hidden;
+    }
+    .wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px 12px;border-radius:16px;background:rgba(0,0,0,.25);
+      border:1px solid var(--stroke); box-shadow: var(--shadow); backdrop-filter: blur(10px);
+    }
+    .back{display:flex;align-items:center;gap:8px;color:var(--txt);text-decoration:none;font-weight:900}
+    .titlePill{
+      display:flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      background:rgba(0,0,0,.28);
+      border:1px solid var(--stroke);
+      font-weight:1000; letter-spacing:.2px;
+    }
+    .balPill{
+      display:flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:16px;
+      background:rgba(0,0,0,.28);
+      border:1px solid var(--stroke);
+      font-weight:1000;
+      min-width:140px; justify-content:flex-end;
+    }
+    .balPill small{color:var(--muted); font-weight:900}
+    .card{
+      border-radius: var(--r);
+      background: linear-gradient(180deg, rgba(25,33,60,.70), rgba(10,14,30,.55));
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .stage{
+      position:relative;
+      height:330px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(600px 280px at 50% 75%, rgba(30,144,255,.14), transparent 60%);
+    }
+    canvas{position:absolute; inset:0;}
+    .mult{
+      position:absolute; top:86px; left:0; right:0;
+      text-align:center;
+      font-size: 64px;
+      font-weight: 1100;
+      letter-spacing: .5px;
+      text-shadow: 0 20px 70px rgba(0,0,0,.55);
+      pointer-events:none;
+    }
+    .mult.bet{opacity:.0}
+    .countCircle{
+      width:170px;height:170px;border-radius:999px;
+      display:grid;place-items:center;
+      border:10px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      box-shadow: inset 0 0 0 6px rgba(0,0,0,.25);
+      position:relative;
+    }
+    .countNum{font-size:62px;font-weight:1100}
+    .countRing{
+      position:absolute; inset:-10px;
+      border-radius:999px;
+      background: conic-gradient(from 270deg, rgba(255,165,0,.95) var(--p), rgba(255,255,255,.08) 0);
+      mask: radial-gradient(farthest-side, transparent calc(100% - 20px), #000 0);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 20px), #000 0);
+      filter: drop-shadow(0 16px 40px rgba(0,0,0,.35));
+    }
+
+    .controls{padding:12px}
+    .chips{display:flex;gap:8px;flex-wrap:nowrap;overflow:auto;padding-bottom:6px}
+    .chip{
+      flex:0 0 auto;
+      padding:8px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.22);
+      font-weight:1000;
+    }
+    .chip.active{border-color:rgba(30,144,255,.55); box-shadow:0 0 0 4px rgba(30,144,255,.16)}
+    .btn{
+      width:100%;
+      margin-top:10px;
+      padding:16px 14px;
+      border-radius:18px;
+      border:0;
+      font-weight:1100;
+      font-size:18px;
+      letter-spacing:.2px;
+      background: var(--blue);
+      color:white;
+      box-shadow: 0 18px 55px rgba(30,144,255,.25);
+      cursor:pointer;
+    }
+    .btn:disabled{opacity:.55; cursor:not-allowed}
+    .btn.cash{ background: linear-gradient(180deg, rgba(48,229,159,1), rgba(48,229,159,.85)); color:#052015; }
+    .hint{color:var(--muted);font-size:12px;margin-top:8px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .list{padding:12px;display:flex;flex-direction:column;gap:10px}
+    .row{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.20);
+    }
+    .left{display:flex;align-items:center;gap:10px;min-width:0}
+    .av{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-weight:1100}
+    .nm{min-width:0}
+    .nm b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+    .nm small{color:var(--muted);font-weight:900}
+    .pill{
+      padding:8px 10px;border-radius:14px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      font-weight:1100;
+    }
+    .win{border-color:rgba(48,229,159,.35); background:rgba(48,229,159,.10)}
+    .lost{border-color:rgba(255,75,110,.35); background:rgba(255,75,110,.08)}
   </style>
 </head>
 <body>
-<div class="app">
-  <header class="top-bar">
-    <button class="icon-btn" onclick="history.back()">←</button>
-    <div class="title-pill">
-      <span class="emoji">🚀</span>
-      <span>BIKA ROCKET</span>
+  <div class="wrap">
+    <div class="top">
+      <a class="back" href="./index.html">← Back</a>
+      <div class="titlePill">🎁 <span>BIKA ROCKET</span></div>
+      <div class="balPill"><small>MMK</small> <span id="bal">—</span></div>
     </div>
-    <div class="balance-pill">
-      <div class="balance-pill-label">Balance</div>
-      <div class="balance-pill-amount" id="balanceText">0 MMK</div>
-    </div>
-  </header>
 
-  <main>
-    <!-- Rocket area -->
-    <section class="card rocket-panel">
-      <div class="phase-line">
-        <span id="phaseText">BETTING • Place your bet</span>
-        <span class="phase-badge live" id="phaseBadge">Round LIVE</span>
-      </div>
+    <div class="card">
+      <div class="stage">
+        <canvas id="c"></canvas>
+        <div id="mult" class="mult bet">1.00×</div>
 
-      <div class="rocket-layout">
-        <div class="countdown-circle" id="countCircle">
-          <div class="countdown-inner">
-            <div class="countdown-number" id="mainNumber">0</div>
-            <div class="countdown-label" id="mainLabel">SECONDS</div>
-          </div>
-        </div>
-
-        <div class="rocket-track">
-          <div class="rocket-trail"></div>
-          <div class="rocket-dot" id="rocketDot"></div>
-          <div class="rocket-ship" id="rocketShip">
-            <span class="rocket-ship-icon">🚀</span>
-          </div>
-          <div class="rocket-burst" id="rocketBurst"></div>
-        </div>
-
-        <div class="chips-row" id="recentChips">
-          <!-- last multipliers -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Bet control -->
-    <section class="card bet-card">
-      <div class="bet-header">
-        <div>
-          <div>Bet panel</div>
-          <span class="sub">Min 20 MMK · Max 1000 MMK</span>
-        </div>
-        <span class="sub" id="roundInfo">Round 1</span>
-      </div>
-
-      <div class="bet-input-row">
-        <span style="font-size:12px;color:var(--text-soft)">Bet amount</span>
-        <div class="bet-input-group">
-          <button id="minusBtn">−</button>
-          <input
-            id="betInput"
-            class="bet-input"
-            type="number"
-            inputmode="numeric"
-            min="20"
-            max="1000"
-            placeholder="0"
-          />
-          <button id="plusBtn">+</button>
+        <div id="countWrap" class="countCircle" style="--p:0deg;">
+          <div class="countRing"></div>
+          <div class="countNum" id="countNum">6</div>
         </div>
       </div>
 
-      <div class="quick-bets">
-        <button class="quick-bet-btn" data-bet="20">20</button>
-        <button class="quick-bet-btn" data-bet="50">50</button>
-        <button class="quick-bet-btn" data-bet="100">100</button>
-        <button class="quick-bet-btn" data-bet="200">200</button>
-        <button class="quick-bet-btn" data-bet="500">500</button>
-        <button class="quick-bet-btn" data-bet="1000">1000</button>
+      <div class="controls">
+        <div class="chips" id="chips"></div>
+        <button class="btn" id="mainBtn">Place bet</button>
+        <div class="hint">
+          <span id="phase">Phase: —</span>
+          <span id="note">Tip: Bet 20–1000</span>
+        </div>
       </div>
-
-      <button class="primary-btn" id="actionButton">Place bet</button>
-
-      <div class="hint-text" id="hintText">
-        Round is in <strong>BETTING</strong> phase. Enter amount and tap
-        <strong>Place bet</strong>.
-      </div>
-    </section>
-
-    <!-- History -->
-    <section class="card history-card">
-      <div class="history-header">
-        <span>My round history</span>
-        <span style="font-size:11px;color:var(--text-soft)" id="historySummary">
-          No rounds yet
-        </span>
-      </div>
-
-      <ul class="history-list" id="historyList"></ul>
-    </section>
-  </main>
-</div>
-
-<!-- bottom nav (visual only) -->
-<div class="bottom-nav">
-  <div class="bottom-nav-inner">
-    <div class="nav-item">
-      <span class="icon">🎒</span>
-      <span>Backpack</span>
     </div>
-    <div class="nav-item">
-      <span class="icon">👥</span>
-      <span>Invite</span>
-    </div>
-    <div class="nav-item active">
-      <span class="icon">🏠</span>
-      <span>Home</span>
-    </div>
-    <div class="nav-item">
-      <span class="icon">🏆</span>
-      <span>Leaderboard</span>
-    </div>
-    <div class="nav-item">
-      <span class="icon">💰</span>
-      <span>Earn</span>
+
+    <div class="card">
+      <div class="list" id="players"></div>
     </div>
   </div>
-</div>
 
 <script>
-  // ====== CONFIG ======
-  const MIN_BET = 20;
-  const MAX_BET = 1000;
-  const BET_DURATION = 6000; // ms (0 -> 6 sec)
-  const HOLD_AFTER_CRASH = 3000; // ms
-  const MULTI_TICK = 80; // ms update for multiplier
+  // ========= CONFIG =========
+  const PROXY = "https://bika-web-proxy.dabllu2022.workers.dev";
+  const USER_ID = localStorage.getItem("bika_userId") || "8251006975"; // MVP manual
+  localStorage.setItem("bika_userId", USER_ID);
+  const BETS = [20,50,100,200,500,1000];
 
-  // Demo balance. TODO: Replace with real balance from your API.
-  let balance = 100000; // MMK
+  // ========= UI state =========
+  let selectedBet = 100;
+  let myHasBet = false;
+  let lastRoundId = null;
+  let phase = "BETTING";
+  let currentMult = 1.00;
 
-  // STATE
-  let roundIndex = 1;
-  let roundState = "betting"; // betting | launch | crashed
-  let betAmount = 0;
-  let hasBetThisRound = false;
-  let cashedOut = false;
-  let currentMultiplier = 1.0;
-  let crashPoint = 2.0;
-  let engineTimer = null;
-  let rocketTrackWidth = 0;
-  let recentMultipliers = [];
+  // ========= canvas rocket anim =========
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d");
+  let W=0,H=0, DPR=1;
 
-  // ELEMENTS
-  const balanceText = document.getElementById("balanceText");
-  const mainNumber = document.getElementById("mainNumber");
-  const mainLabel = document.getElementById("mainLabel");
-  const countCircle = document.getElementById("countCircle");
-  const rocketDot = document.getElementById("rocketDot");
-  const rocketShip = document.getElementById("rocketShip");
-  const rocketBurst = document.getElementById("rocketBurst");
-  const recentChips = document.getElementById("recentChips");
-  const phaseText = document.getElementById("phaseText");
-  const phaseBadge = document.getElementById("phaseBadge");
-  const roundInfo = document.getElementById("roundInfo");
-  const betInput = document.getElementById("betInput");
-  const minusBtn = document.getElementById("minusBtn");
-  const plusBtn = document.getElementById("plusBtn");
-  const quickBetBtns = document.querySelectorAll(".quick-bet-btn");
-  const actionButton = document.getElementById("actionButton");
-  const hintText = document.getElementById("hintText");
-  const historyList = document.getElementById("historyList");
-  const historySummary = document.getElementById("historySummary");
-
-  function formatMMK(v) {
-    return v.toLocaleString("en-US") + " MMK";
+  function resize(){
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = canvas.width = Math.floor(canvas.clientWidth * DPR);
+    H = canvas.height = Math.floor(canvas.clientHeight * DPR);
   }
+  window.addEventListener("resize", resize);
+  resize();
 
-  function updateBalanceUI() {
-    balanceText.textContent = formatMMK(balance);
-  }
-
-  function setPhase(state, extra = "") {
-    switch (state) {
-      case "betting":
-        phaseText.textContent = "BETTING • Place your bet";
-        phaseBadge.textContent = "Round LIVE";
-        phaseBadge.classList.add("live");
-        hintText.innerHTML =
-          'Round is in <strong>BETTING</strong> phase. Enter amount and tap <strong>Place bet</strong>.';
-        mainLabel.textContent = "SECONDS";
-        break;
-      case "launch":
-        phaseText.textContent = "FLYING • Cash out before it explodes!";
-        phaseBadge.textContent = "ROCKET LIVE";
-        phaseBadge.classList.add("live");
-        hintText.innerHTML =
-          'Tap <strong>Cash out</strong> at the multiplier you like. If it crashes first, you lose the bet.';
-        mainLabel.textContent = "MULTIPLIER";
-        break;
-      case "crashed":
-        phaseText.textContent = "CRASHED • " + extra;
-        phaseBadge.textContent = "Round ended";
-        phaseBadge.classList.remove("live");
-        hintText.innerHTML =
-          "Round finished. Next round will open shortly. Place a new bet when countdown starts.";
-        break;
+  let sparks = [];
+  function addSparks(x,y,n=60){
+    for(let i=0;i<n;i++){
+      sparks.push({
+        x,y,
+        vx:(Math.random()*2-1)*3.2,
+        vy:(Math.random()*2-1)*3.2,
+        g:0.06+Math.random()*0.06,
+        life:45+Math.random()*30
+      });
     }
   }
 
-  function measureTrack() {
-    const rect = rocketShip.parentElement.getBoundingClientRect();
-    rocketTrackWidth = rect.width - 56 - 24; // track minus rocket width and padding
+  function bez2(a,c,b,t){ return (1-t)*(1-t)*a + 2*(1-t)*t*c + t*t*b; }
+  function bez2d(a,c,b,t){ return 2*(1-t)*(c-a) + 2*t*(b-c); }
+
+  function roundRect(x,y,w,h,r,fill){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    if(fill) ctx.fill(); else ctx.stroke();
   }
 
-  window.addEventListener("resize", () => {
-    measureTrack();
+  function drawRocket(x,y,ang){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(ang);
+    ctx.shadowColor = "rgba(255,255,255,.35)";
+    ctx.shadowBlur = 22*DPR;
+
+    ctx.fillStyle = "rgba(120,210,255,.95)";
+    roundRect(-18*DPR, -8*DPR, 42*DPR, 16*DPR, 8*DPR, true);
+
+    ctx.fillStyle = "rgba(255,120,140,.95)";
+    ctx.beginPath();
+    ctx.moveTo(24*DPR, 0);
+    ctx.lineTo(14*DPR, -8*DPR);
+    ctx.lineTo(14*DPR, 8*DPR);
+    ctx.closePath(); ctx.fill();
+
+    ctx.fillStyle = "rgba(0,0,0,.45)";
+    ctx.beginPath(); ctx.arc(4*DPR,0, 5*DPR,0,Math.PI*2); ctx.fill();
+
+    if(phase==="FLYING"){
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "rgba(80,255,180,.92)";
+      ctx.beginPath();
+      ctx.moveTo(-18*DPR,0);
+      ctx.quadraticCurveTo(-34*DPR, -8*DPR, -40*DPR, 0);
+      ctx.quadraticCurveTo(-34*DPR, 8*DPR, -18*DPR, 0);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    ctx.globalAlpha = 0.12;
+    for(let i=0;i<22;i++){
+      const x = (i*97 % W);
+      const y = (i*173 % H);
+      ctx.beginPath(); ctx.arc(x,y, 4*DPR, 0, Math.PI*2); ctx.fillStyle="#ffffff"; ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    const t = phase === "FLYING" ? Math.min(1, (currentMult-1)/9) : 0;
+    const x0 = 40*DPR, y0 = H*0.72;
+    const x1 = W*0.74, y1 = H*0.24;
+    const cx = W*0.35, cy = H*0.80;
+
+    const rx = bez2(x0,cx,x1,t);
+    const ry = bez2(y0,cy,y1,t);
+
+    ctx.lineWidth = 10*DPR;
+    ctx.lineCap = "round";
+    const grad = ctx.createLinearGradient(x0,y0,rx,ry);
+    grad.addColorStop(0, "rgba(140,90,255,.25)");
+    grad.addColorStop(1, "rgba(140,90,255,.95)");
+    ctx.strokeStyle = grad;
+    ctx.beginPath();
+    for(let s=0; s<=t; s+=0.02){
+      const px = bez2(x0,cx,x1,s);
+      const py = bez2(y0,cy,y1,s);
+      if(s===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+
+    const angle = Math.atan2(bez2d(y0,cy,y1,t), bez2d(x0,cx,x1,t));
+    drawRocket(rx, ry, angle);
+
+    sparks = sparks.filter(p => p.life>0);
+    for(const p of sparks){
+      p.vy += p.g*DPR;
+      p.x += p.vx*DPR;
+      p.y += p.vy*DPR;
+      p.life -= 1;
+      ctx.globalAlpha = Math.max(0, p.life/70);
+      ctx.fillStyle = "rgba(255,255,255,1)";
+      ctx.beginPath(); ctx.arc(p.x,p.y, 2.4*DPR, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  // ========= UI building =========
+  const chipsEl = document.getElementById("chips");
+  BETS.forEach(v=>{
+    const b=document.createElement("div");
+    b.className="chip"+(v===selectedBet?" active":"");
+    b.textContent = v+" MMK";
+    b.onclick=()=>{ selectedBet=v; [...chipsEl.children].forEach(c=>c.classList.remove("active")); b.classList.add("active"); };
+    chipsEl.appendChild(b);
   });
 
-  function moveRocket(progress) {
-    progress = Math.max(0, Math.min(1, progress || 0));
-    const translateX = rocketTrackWidth * progress;
-    const translateY = -18 * progress;
-    rocketDot.style.transform = `translateX(${translateX}px)`;
-    rocketShip.style.transform = `translateX(${translateX}px) translateY(${translateY}px)`;
-  }
+  const btn = document.getElementById("mainBtn");
+  const balEl = document.getElementById("bal");
+  const phaseEl = document.getElementById("phase");
+  const noteEl = document.getElementById("note");
+  const multEl = document.getElementById("mult");
+  const countWrap = document.getElementById("countWrap");
+  const countNum = document.getElementById("countNum");
 
-  function resetRocket() {
-    moveRocket(0);
-    rocketBurst.classList.remove("active");
-  }
-
-  function setCountdownIndicator(progress) {
-    const clamped = Math.max(0, Math.min(1, progress));
-    const deg = -120 + 270 * clamped;
-    countCircle.style.setProperty("--progress", clamped);
-    countCircle.style.setProperty("--deg", deg + "deg");
-    countCircle.style.setProperty("--opacity", clamped > 0 ? "1" : "0");
-    countCircle.style.setProperty("--deg", deg);
-    countCircle.querySelector("::after");
-    countCircle.style.setProperty("--dummy", "0"); // no-op just to trigger style
-    countCircle.style.setProperty("--opacity", clamped > 0 ? "1" : "0");
-    countCircle.style.cssText += `;`;
-    // we can't animate pseudo directly from JS nicely on mobile, so keep simple
-  }
-
-  // ====== ROUND FLOW ======
-
-  function startBettingRound() {
-    clearInterval(engineTimer);
-    roundState = "betting";
-    hasBetThisRound = false;
-    cashedOut = false;
-    betAmount = 0;
-    resetRocket();
-    roundInfo.textContent = "Round " + roundIndex;
-    actionButton.disabled = false;
-    actionButton.textContent = "Place bet";
-    actionButton.dataset.mode = "bet";
-
-    // reset input
-    betInput.value = "";
-    updateBalanceUI();
-    setPhase("betting");
-
-    const start = performance.now();
-    engineTimer = setInterval(() => {
-      const now = performance.now();
-      const elapsed = now - start;
-      const sec = Math.floor(elapsed / 1000);
-      const progress = Math.min(1, elapsed / BET_DURATION);
-      mainNumber.textContent = Math.min(6, sec);
-      // simple glow on circle
-      countCircle.style.boxShadow =
-        "0 18px 40px rgba(15,23,42,0.95), 0 0 14px rgba(249,115,22," +
-        (0.3 + 0.4 * progress) +
-        ")";
-      if (elapsed >= BET_DURATION) {
-        clearInterval(engineTimer);
-        launchRocket();
-      }
-    }, 80);
-  }
-
-  function launchRocket() {
-    roundState = "launch";
-    rocketBurst.classList.add("active");
-    currentMultiplier = 1.0;
-    // Random crash between 1.00x and 10.00x
-    crashPoint = +(1 + Math.random() * 9).toFixed(2);
-    setPhase("launch");
-    actionButton.textContent = "Cash out";
-    actionButton.dataset.mode = "cashout";
-    if (!hasBetThisRound) {
-      hintText.innerHTML =
-        "You didn't place a bet this round. Watch the rocket, then join next round.";
-    }
-
-    engineTimer = setInterval(() => {
-      if (roundState !== "launch") return;
-      currentMultiplier += 0.04 + currentMultiplier * 0.015; // accelerate a bit
-      mainNumber.textContent = currentMultiplier.toFixed(2) + "x";
-
-      const progress = Math.min(1, currentMultiplier / crashPoint);
-      moveRocket(progress);
-
-      if (currentMultiplier >= crashPoint) {
-        handleCrash();
-      }
-    }, MULTI_TICK);
-  }
-
-  function handleCrash() {
-    if (roundState !== "launch") return;
-    roundState = "crashed";
-    clearInterval(engineTimer);
-    mainNumber.textContent = crashPoint.toFixed(2) + "x";
-    setPhase("crashed", "Rocket exploded at " + crashPoint.toFixed(2) + "x");
-    rocketBurst.classList.remove("active");
-    actionButton.disabled = true;
-    actionButton.textContent = "Round ended";
-    actionButton.dataset.mode = "none";
-
-    // if user has bet and didn't cash out => lose
-    let resultText = "No bet this round";
-    if (hasBetThisRound && !cashedOut) {
-      addHistory({
-        round: roundIndex,
-        bet: betAmount,
-        cashoutMulti: null,
-        winAmount: -betAmount,
-      });
-      resultText =
-        "You lost " + formatMMK(betAmount) + " (crashed before cash out)";
-    }
-
-    historySummary.textContent = resultText;
-
-    // store this crash in recent chips
-    recentMultipliers.unshift(crashPoint.toFixed(2) + "x");
-    if (recentMultipliers.length > 7) recentMultipliers.pop();
-    renderRecentChips();
-
-    roundIndex++;
-    setTimeout(startBettingRound, HOLD_AFTER_CRASH);
-  }
-
-  function addHistory(entry) {
-    const li = document.createElement("li");
-    li.className = "history-row";
-
-    const main = document.createElement("div");
-    main.className = "history-main";
-
-    const title = document.createElement("div");
-    title.textContent = "Round " + entry.round;
-    main.appendChild(title);
-
-    const tags = document.createElement("div");
-    tags.className = "history-tags";
-
-    const betTag = document.createElement("span");
-    betTag.className = "tag";
-    betTag.textContent = "Bet " + entry.bet.toLocaleString("en-US");
-    tags.appendChild(betTag);
-
-    if (entry.cashoutMulti) {
-      const multiTag = document.createElement("span");
-      multiTag.className = "tag win";
-      multiTag.textContent = "Cash out " + entry.cashoutMulti.toFixed(2) + "x";
-      tags.appendChild(multiTag);
+  function setBtn(mode){
+    if(mode==="BET"){
+      btn.className="btn";
+      btn.textContent="Place bet";
+      btn.disabled = false;
+    } else if(mode==="CASH"){
+      btn.className="btn cash";
+      btn.textContent="Cash out";
+      btn.disabled = !myHasBet;
     } else {
-      const loseTag = document.createElement("span");
-      loseTag.className = "tag lose";
-      loseTag.textContent = "No cash out";
-      tags.appendChild(loseTag);
+      btn.className="btn";
+      btn.textContent="Waiting…";
+      btn.disabled = true;
     }
-
-    main.appendChild(tags);
-
-    const amount = document.createElement("div");
-    amount.className = "history-amount";
-    if (entry.winAmount >= 0) {
-      amount.classList.add("win");
-      amount.textContent = "+" + formatMMK(entry.winAmount);
-    } else {
-      amount.classList.add("lose");
-      amount.textContent = "-" + formatMMK(Math.abs(entry.winAmount));
-    }
-
-    li.appendChild(main);
-    li.appendChild(amount);
-
-    historyList.prepend(li);
   }
 
-  function renderRecentChips() {
-    recentChips.innerHTML = "";
-    recentMultipliers.forEach((m, idx) => {
-      const span = document.createElement("span");
-      span.className = "chip";
-      if (idx === 0) span.classList.add("chip", "hot");
-      span.textContent = m;
-      recentChips.appendChild(span);
+  // ========= API =========
+  async function jget(path){
+    const r = await fetch(PROXY + path, { method:"GET" });
+    return r.json();
+  }
+  async function jpost(path, body){
+    const r = await fetch(PROXY + path, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(body)
+    });
+    return r.json();
+  }
+
+  // ========= Actions =========
+  btn.onclick = async ()=>{
+    try{
+      if(phase==="BETTING"){
+        const data = await jpost("/rocket/bet", { userId: USER_ID, amount: selectedBet });
+        if(!data.ok){ noteEl.textContent = "Bet failed: " + (data.error||""); return; }
+        myHasBet = true;
+        noteEl.textContent = "Bet placed: "+selectedBet+" MMK";
+      } else if(phase==="FLYING"){
+        const data = await jpost("/rocket/cashout", { userId: USER_ID });
+        if(!data.ok){ noteEl.textContent = "Cashout failed: " + (data.error||""); return; }
+        noteEl.textContent = `Cashed out @ ${Number(data.cashoutMult).toFixed(2)}× • +${Number(data.payout||0).toLocaleString("en-US")} MMK`;
+        setBtn("WAIT");
+      }
+    } catch(e){
+      noteEl.textContent = "Network error";
+    }
+  };
+
+  function escapeHtml(s){
+    return String(s??"").replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+  }
+
+  function renderPlayers(players){
+    const box = document.getElementById("players");
+    box.innerHTML="";
+    if(!players || !players.length){
+      box.innerHTML = `<div style="padding:12px;color:rgba(220,230,255,.7);font-weight:900;">No bets yet.</div>`;
+      return;
+    }
+    players.slice(0,12).forEach(p=>{
+      const name = p.username ? "@"+p.username : (p.firstName || ("ID "+p.userId));
+      const sub = `${Number(p.amount||0).toLocaleString("en-US")} MMK • ${p.cashoutMult ? (Number(p.cashoutMult).toFixed(2)+"×") : "—"}`;
+      const right = p.payout ? (Number(p.payout).toLocaleString("en-US")+" MMK") : (Number(p.amount||0).toLocaleString("en-US")+" MMK");
+      const cls = p.payout ? "win" : (phase==="CRASHED" ? "lost" : "");
+      const row = document.createElement("div");
+      row.className="row "+cls;
+      row.innerHTML = `
+        <div class="left">
+          <div class="av">◆</div>
+          <div class="nm"><b>${escapeHtml(name)}</b><small>${escapeHtml(sub)}</small></div>
+        </div>
+        <div class="pill">${escapeHtml(right)}</div>
+      `;
+      box.appendChild(row);
     });
   }
 
-  // ====== USER ACTIONS ======
-
-  function clampBet(v) {
-    if (isNaN(v)) return 0;
-    v = Math.floor(v);
-    if (v < MIN_BET) v = MIN_BET;
-    if (v > MAX_BET) v = MAX_BET;
-    if (v > balance) v = balance;
-    return v;
-  }
-
-  function syncBetInput(v) {
-    betInput.value = v > 0 ? v : "";
-  }
-
-  minusBtn.addEventListener("click", () => {
-    let current = parseInt(betInput.value || "0", 10);
-    if (!current) current = MIN_BET;
-    current = clampBet(current - 20);
-    syncBetInput(current);
-  });
-
-  plusBtn.addEventListener("click", () => {
-    let current = parseInt(betInput.value || "0", 10);
-    if (!current) current = MIN_BET;
-    current = clampBet(current + 20);
-    syncBetInput(current);
-  });
-
-  quickBetBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const v = clampBet(parseInt(btn.dataset.bet, 10));
-      syncBetInput(v);
-    });
-  });
-
-  actionButton.addEventListener("click", () => {
-    const mode = actionButton.dataset.mode;
-    if (mode === "bet") {
-      if (roundState !== "betting") return;
-      let v = clampBet(parseInt(betInput.value || "0", 10));
-      if (!v || v < MIN_BET) {
-        hintText.innerHTML =
-          "<strong>Bet too low.</strong> Minimum is " + MIN_BET + " MMK.";
-        return;
+  // ========= Poll loop =========
+  async function tick(){
+    try{
+      // balance via proxy /balance
+      const b = await jget("/balance?userId="+encodeURIComponent(USER_ID));
+      if(b?.ok){
+        const rawBal = (b.balance ?? b.data?.balance ?? 0);
+        balEl.textContent = Number(rawBal||0).toLocaleString("en-US");
       }
-      if (v > balance) {
-        hintText.innerHTML =
-          "<strong>Not enough balance.</strong> Adjust your bet.";
-        return;
+
+      const s = await jget("/rocket/state");
+      if(!s?.ok) throw new Error("state");
+
+      if(lastRoundId && s.id !== lastRoundId){
+        myHasBet = false;
+        setBtn("BET");
       }
-      // lock bet
-      betAmount = v;
-      balance -= v;
-      updateBalanceUI();
-      hasBetThisRound = true;
-      cashedOut = false;
-      actionButton.textContent = "Bet placed";
-      actionButton.disabled = true;
-      hintText.innerHTML =
-        "Bet locked: <strong>" +
-        formatMMK(betAmount) +
-        "</strong>. Wait for rocket to launch…";
-    } else if (mode === "cashout") {
-      if (roundState !== "launch") return;
-      if (!hasBetThisRound || cashedOut) return;
-      cashedOut = true;
-      const win = Math.floor(betAmount * currentMultiplier);
-      balance += win;
-      updateBalanceUI();
-      addHistory({
-        round: roundIndex,
-        bet: betAmount,
-        cashoutMulti: currentMultiplier,
-        winAmount: win,
-      });
-      historySummary.textContent =
-        "You cashed out at " +
-        currentMultiplier.toFixed(2) +
-        "x and won " +
-        formatMMK(win) +
-        ".";
-      hintText.innerHTML =
-        "<strong>Nice!</strong> You cashed out at " +
-        currentMultiplier.toFixed(2) +
-        "x. Wait for next round to bet again.";
-      actionButton.textContent = "Cashed out";
-      actionButton.disabled = true;
+      lastRoundId = s.id;
+      phase = s.phase;
+
+      if(phase==="BETTING"){
+        multEl.classList.add("bet");
+        const left = Math.max(0, s.countdownLeftMs||0);
+        const sec = Math.ceil(left/1000);
+        countNum.textContent = String(sec);
+        const prog = 1 - (left / 6000);
+        const deg = Math.max(0, Math.min(360, prog*360));
+        countWrap.style.setProperty("--p", deg+"deg");
+        countWrap.style.display = "grid";
+
+        phaseEl.textContent = "Phase: BETTING";
+        setBtn("BET");
+        noteEl.textContent = myHasBet ? "Bet placed. Waiting rocket…" : "Choose amount, then Place bet";
+        currentMult = 1.00;
+      }
+
+      if(phase==="FLYING"){
+        countWrap.style.display = "none";
+        multEl.classList.remove("bet");
+        currentMult = Number(s.currentMult||1);
+        multEl.textContent = currentMult.toFixed(2) + "×";
+        phaseEl.textContent = "Phase: FLYING";
+        setBtn("CASH");
+        noteEl.textContent = myHasBet ? "Cash out anytime — rocket keeps running" : "No bet this round";
+      }
+
+      if(phase==="CRASHED"){
+        countWrap.style.display = "none";
+        multEl.classList.remove("bet");
+        multEl.textContent = (Number(s.crashMult||1).toFixed(2)) + "×";
+        phaseEl.textContent = "Phase: CRASHED";
+        setBtn("WAIT");
+        addSparks(W*0.62, H*0.34, 140);
+        noteEl.textContent = "CRASH! next round soon…";
+      }
+
+      const p = await jget("/rocket/players");
+      if(p?.ok) renderPlayers(p.players);
+
+    } catch(e){
+      phaseEl.textContent = "Phase: OFFLINE";
+      noteEl.textContent = "Failed to fetch";
+      setBtn("WAIT");
+    } finally {
+      setTimeout(tick, 350);
     }
-  });
-
-  // ====== INIT ======
-  function init() {
-    updateBalanceUI();
-    measureTrack();
-    renderRecentChips();
-    startBettingRound();
   }
-
-  document.addEventListener("DOMContentLoaded", init);
+  tick();
 </script>
 </body>
 </html>
